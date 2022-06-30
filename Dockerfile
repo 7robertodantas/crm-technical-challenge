@@ -6,7 +6,7 @@ RUN gradle fatJar --no-daemon
 
 FROM openjdk:11.0.6-jdk-slim
 RUN mkdir /app
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/empty-kotlin.jar
+COPY --from=build /home/gradle/src/app/build/libs/*.jar /app/empty-kotlin.jar
 RUN ls /app/
 ENTRYPOINT ["java", "-jar", "/app/empty-kotlin.jar"]
 
