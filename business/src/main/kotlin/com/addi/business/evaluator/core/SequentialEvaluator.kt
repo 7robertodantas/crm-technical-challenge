@@ -1,0 +1,17 @@
+package com.addi.business.evaluator.core
+
+import com.addi.business.command.LeadEvaluateCommand
+import com.addi.business.outcome.EvaluationOutcome
+
+class SequentialEvaluator(
+    private val evaluators: List<LeadEvaluator>
+) : LeadEvaluator {
+
+    constructor(vararg evaluators: LeadEvaluator) : this(evaluators.toList())
+
+    override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
+        return evaluators.fold(EvaluationOutcome.success()) { outcome, next ->
+            outcome.flatMap { next.evaluate(command) }
+        }
+    }
+}
