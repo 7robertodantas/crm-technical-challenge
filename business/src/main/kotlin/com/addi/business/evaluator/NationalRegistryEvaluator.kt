@@ -4,7 +4,8 @@ import com.addi.business.command.GetPersonDataCommand
 import com.addi.business.command.LeadEvaluateCommand
 import com.addi.business.database.PersonRepository
 import com.addi.business.domain.Person
-import com.addi.business.outcome.LeadEvaluationOutcome
+import com.addi.business.evaluator.core.LeadEvaluator
+import com.addi.business.outcome.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.NationalRegistry
 
 class NationalRegistryEvaluator(
@@ -12,7 +13,7 @@ class NationalRegistryEvaluator(
     private val personRepository: PersonRepository
 ) : LeadEvaluator {
 
-    override suspend fun evaluate(command: LeadEvaluateCommand): LeadEvaluationOutcome {
+    override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
         val registry = nationalRegistry.getRegistry(GetPersonDataCommand(command.nationalIdNumber))
         val person = Person(
             nationalIdNumber = registry.nationalIdNumber,
@@ -22,10 +23,10 @@ class NationalRegistryEvaluator(
             email = registry.email
         )
         if (!personRepository.matchStored(person)) {
-            return LeadEvaluationOutcome.fail("personal information does not match")
+            return EvaluationOutcome.fail("personal information does not match")
         }
 
-        return LeadEvaluationOutcome.success()
+        return EvaluationOutcome.success()
     }
 
 }
