@@ -1,5 +1,5 @@
 package com.addi.business.command
 
-data class LeadProspectCommand(
+data class LeadEvaluateCommand(
     val nationalIdNumber: String
 )
