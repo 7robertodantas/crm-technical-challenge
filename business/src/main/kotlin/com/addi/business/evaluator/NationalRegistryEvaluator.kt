@@ -5,7 +5,7 @@ import com.addi.business.command.LeadEvaluateCommand
 import com.addi.business.database.PersonRepository
 import com.addi.business.domain.Person
 import com.addi.business.evaluator.core.LeadEvaluator
-import com.addi.business.outcome.EvaluationOutcome
+import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.NationalRegistry
 
 class NationalRegistryEvaluator(

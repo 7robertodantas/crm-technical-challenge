@@ -1,4 +1,4 @@
-package com.addi.business.outcome
+package com.addi.business.evaluator.core
 
 data class EvaluationOutcome(
     val converted: Boolean,

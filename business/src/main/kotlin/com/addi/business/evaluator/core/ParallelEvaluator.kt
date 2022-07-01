@@ -1,7 +1,6 @@
 package com.addi.business.evaluator.core
 
 import com.addi.business.command.LeadEvaluateCommand
-import com.addi.business.outcome.EvaluationOutcome
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
