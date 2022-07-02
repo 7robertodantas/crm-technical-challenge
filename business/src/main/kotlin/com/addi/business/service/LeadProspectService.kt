@@ -4,10 +4,10 @@ import com.addi.business.command.LeadEvaluateCommand
 import com.addi.business.database.PersonRepository
 import com.addi.business.evaluator.JudicialRecordsEvaluator
 import com.addi.business.evaluator.NationalRegistryEvaluator
-import com.addi.business.evaluator.core.ParallelEvaluator
 import com.addi.business.evaluator.ScoreQualificationEvaluator
-import com.addi.business.evaluator.core.SequentialEvaluator
 import com.addi.business.evaluator.core.EvaluationOutcome
+import com.addi.business.evaluator.core.ParallelEvaluator
+import com.addi.business.evaluator.core.SequentialEvaluator
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.ProspectQualifier
