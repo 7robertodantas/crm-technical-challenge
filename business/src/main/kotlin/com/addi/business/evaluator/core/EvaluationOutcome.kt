@@ -15,7 +15,8 @@ data class EvaluationOutcome(
         else fn(this)
     }
 
-    private fun isFail(): Boolean = !converted && error != null
+    fun isFail(): Boolean = !converted && error != null
+    fun isSuccess(): Boolean = !isFail()
 
     companion object {
         fun fail(error: String): EvaluationOutcome =
