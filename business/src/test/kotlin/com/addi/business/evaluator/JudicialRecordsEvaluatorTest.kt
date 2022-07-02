@@ -17,16 +17,15 @@ internal class JudicialRecordsEvaluatorTest {
     private val getPersonDataCommand = GetPersonDataCommand(nationalNumber)
     private val leadEvaluateCommand = LeadEvaluateCommand(nationalNumber)
 
+    private val judicialRecordArchive = mockkClass(JudicialRecordArchive::class)
+    private val evaluator = JudicialRecordsEvaluator(judicialRecordArchive)
+
     @Test
     fun `it should fail if has judicial records`() {
-        val judicialRecordArchive = mockkClass(JudicialRecordArchive::class)
-
         coEvery { judicialRecordArchive.getRegistry(eq(getPersonDataCommand)) } returns JudicialRecord(
             nationalIdNumber = nationalNumber,
             hasRecords = true
         )
-
-        val evaluator = JudicialRecordsEvaluator(judicialRecordArchive)
 
         val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
 
@@ -38,14 +37,10 @@ internal class JudicialRecordsEvaluatorTest {
 
     @Test
     fun `it should succeed if has no judicial records`() {
-        val judicialRecordArchive = mockkClass(JudicialRecordArchive::class)
-
         coEvery { judicialRecordArchive.getRegistry(eq(getPersonDataCommand)) } returns JudicialRecord(
             nationalIdNumber = nationalNumber,
             hasRecords = false
         )
-
-        val evaluator = JudicialRecordsEvaluator(judicialRecordArchive)
 
         val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
 

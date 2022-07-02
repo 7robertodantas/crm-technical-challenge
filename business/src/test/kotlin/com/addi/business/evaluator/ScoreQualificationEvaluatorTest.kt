@@ -17,14 +17,14 @@ internal class ScoreQualificationEvaluatorTest {
     private val leadEvaluateCommand = LeadEvaluateCommand(nationalIdNumber)
     private val getScoreCommand = GetProspectQualificationCommand(nationalIdNumber)
 
+    private val prospectQualifier = mockkClass(ProspectQualifier::class)
+    private val minimumScore = 60
+    private val evaluator = ScoreQualificationEvaluator(
+        prospectQualifier, minimumScore
+    )
+
     @Test
     fun `it should fail if score is below minimum`() {
-        val prospectQualifier = mockkClass(ProspectQualifier::class)
-        val minimumScore = 60
-        val evaluator = ScoreQualificationEvaluator(
-            prospectQualifier, minimumScore
-        )
-
         (0..60).forEach { score ->
             coEvery { prospectQualifier.getScore(eq(getScoreCommand)) } returns ProspectQualification(
                 score
@@ -41,12 +41,6 @@ internal class ScoreQualificationEvaluatorTest {
 
     @Test
     fun `it should succeed if score is equal or above minimum`() {
-        val prospectQualifier = mockkClass(ProspectQualifier::class)
-        val minimumScore = 60
-        val evaluator = ScoreQualificationEvaluator(
-            prospectQualifier, minimumScore
-        )
-
         (61..100).forEach { score ->
             coEvery { prospectQualifier.getScore(eq(getScoreCommand)) } returns ProspectQualification(
                 score
