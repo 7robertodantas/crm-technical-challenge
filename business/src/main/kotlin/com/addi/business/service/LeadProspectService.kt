@@ -19,6 +19,19 @@ class LeadProspectService(
     prospectQualifier: ProspectQualifier
 ) {
 
+    /**
+     * This instantiates an evaluator that will evaluate
+     * in the following order:
+     *
+     * |----------------------------- sequential evaluator -------------------------|
+     * |    |------ parallel evaluator -----| |-------------------------------|     |
+     * |    |                               | |                               |     |
+     * |    |       (national registry)     | |     (score qualification)     |     |
+     * |    |       (judicial records)      | |                               |     |
+     * |    |                               | |                               |     |
+     * |    |--------------[0]--------------| |--------------[1]--------------|     |
+     * |----------------------------------------------------------------------------|
+     */
     private val evaluator = SequentialEvaluator(
         ParallelEvaluator(
             NationalRegistryEvaluator(nationalRegistry, personRepository),
