@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -35,7 +36,11 @@ class ParallelPipelineStep(
 
     override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome = withContext(coroutineContext) {
         steps
-            .map { evaluator -> async { evaluator.evaluate(parameters) } }
+            .map { evaluator -> async {
+                val logger = LoggerFactory.getLogger(evaluator.javaClass)
+                logger.info("Evaluating (async) $parameters")
+                evaluator.evaluate(parameters)
+            } }
             .awaitAll()
             .reduce(EvaluationOutcome::combine)
     }

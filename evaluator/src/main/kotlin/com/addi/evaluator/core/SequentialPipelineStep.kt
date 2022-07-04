@@ -1,5 +1,7 @@
 package com.addi.evaluator.core
 
+import org.slf4j.LoggerFactory
+
 /**
  * This can be used to compose a chain of evaluators
  * that will execute the evaluate in sequence.
@@ -20,6 +22,8 @@ class SequentialPipelineStep(
 
     override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome {
         return steps.fold(EvaluationOutcome.success(parameters.parameters)) { outcome, next ->
+            val logger = LoggerFactory.getLogger(next.javaClass)
+            logger.info("Evaluating ${outcome.parameters}")
             outcome.flatMap { next.evaluate(PipelineParameters(outcome.parameters)) }
         }
     }
