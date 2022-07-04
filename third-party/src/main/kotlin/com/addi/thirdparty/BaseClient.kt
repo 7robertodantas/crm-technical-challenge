@@ -2,6 +2,8 @@ package com.addi.thirdparty
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.future.await
 import org.slf4j.Logger
@@ -20,7 +22,9 @@ open class BaseClient(
     protected val baseUrl: String,
     protected val logger: Logger,
     protected val errorHandler: ErrorHandler,
-    protected val objectMapper: ObjectMapper = jacksonObjectMapper()
+    protected val objectMapper: ObjectMapper = jacksonMapperBuilder()
+        .addModule(JavaTimeModule())
+        .build()
 ) {
 
     companion object {
@@ -35,10 +39,11 @@ open class BaseClient(
 
     protected suspend inline fun <reified T> get(path: String): T {
         val url = "$baseUrl$path"
+        val uri = URI.create(url)
         val request = HttpRequest.newBuilder()
             .timeout(Duration.ofSeconds(20))
             .GET()
-            .uri(URI.create(url))
+            .uri(uri)
             .build()
 
         val response = measureTimedValue {

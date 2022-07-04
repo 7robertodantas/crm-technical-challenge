@@ -40,6 +40,7 @@ subprojects {
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
 
+
         // test dependencies
         testImplementation("org.assertj:assertj-core:3.11.1")
         testImplementation("io.mockk:mockk:1.12.3")

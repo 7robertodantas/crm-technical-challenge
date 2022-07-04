@@ -56,7 +56,7 @@ data class EvaluationOutcome(
         fun fail(ex: Exception): EvaluationOutcome =
             EvaluationOutcome(
                 success = false,
-                error = "something went wrong. ${ex.message}",
+                error = "something went wrong. ${ex.message ?: ex.stackTrace.contentToString() }",
                 parameters = emptyMap()
             )
 
