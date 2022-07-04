@@ -27,6 +27,7 @@ subprojects {
 
         // kotlin
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
 
         // logging

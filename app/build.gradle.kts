@@ -6,6 +6,11 @@ application {
     mainClass.set("Application")
 }
 
+dependencies {
+    implementation(project(":business"))
+    implementation(project(":third-party"))
+}
+
 tasks {
     val fatJar = register<Jar>("fatJar") {
         dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources")) // We need this for Gradle optimization to work
