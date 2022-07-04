@@ -11,12 +11,15 @@ import com.addi.business.evaluator.core.SequentialEvaluator
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.ProspectQualifier
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 class LeadProspectServiceImpl(
     nationalRegistry: NationalRegistry,
     personRepository: PersonRepository,
     judicialRecordArchive: JudicialRecordArchive,
-    prospectQualifier: ProspectQualifier
+    prospectQualifier: ProspectQualifier,
+    coroutineContext: CoroutineContext = Dispatchers.Default
 ): LeadProspectService {
 
     /**
@@ -34,6 +37,7 @@ class LeadProspectServiceImpl(
      */
     private val evaluator = SequentialEvaluator(
         ParallelEvaluator(
+            coroutineContext,
             NationalRegistryEvaluator(nationalRegistry, personRepository),
             JudicialRecordsEvaluator(judicialRecordArchive)
         ),
