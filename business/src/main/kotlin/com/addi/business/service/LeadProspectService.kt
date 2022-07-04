@@ -1,49 +1,20 @@
 package com.addi.business.service
 
 import com.addi.business.domain.command.LeadEvaluateCommand
-import com.addi.business.thirdparty.adapter.PersonRepository
-import com.addi.business.evaluator.JudicialRecordsEvaluator
-import com.addi.business.evaluator.NationalRegistryEvaluator
-import com.addi.business.evaluator.ScoreQualificationEvaluator
 import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.evaluator.core.ParallelEvaluator
-import com.addi.business.evaluator.core.SequentialEvaluator
-import com.addi.business.thirdparty.adapter.JudicialRecordArchive
-import com.addi.business.thirdparty.adapter.NationalRegistry
-import com.addi.business.thirdparty.adapter.ProspectQualifier
 
-class LeadProspectService(
-    nationalRegistry: NationalRegistry,
-    personRepository: PersonRepository,
-    judicialRecordArchive: JudicialRecordArchive,
-    prospectQualifier: ProspectQualifier
-) {
+/**
+ * This represents the business service that will apply the logic to evaluate
+ * a lead into prospect.
+ */
+interface LeadProspectService {
 
     /**
-     * This instantiates an evaluator that will evaluate
-     * in the following order:
+     * @param command the command that contains relevant data of the lead to process
+     * the evaluation to convert into a prospect.
      *
-     * |----------------------------- sequential evaluator -------------------------|
-     * |    |------ parallel evaluator -----| |-------------------------------|     |
-     * |    |                               | |                               |     |
-     * |    |       (national registry)     | |     (score qualification)     |     |
-     * |    |       (judicial records)      | |                               |     |
-     * |    |                               | |                               |     |
-     * |    |--------------[0]--------------| |--------------[1]--------------|     |
-     * |----------------------------------------------------------------------------|
+     * @return an evaluation outcome that contains a flag that can determine whether
+     * the lead was converted or not, and error if present.
      */
-    private val evaluator = SequentialEvaluator(
-        ParallelEvaluator(
-            NationalRegistryEvaluator(nationalRegistry, personRepository),
-            JudicialRecordsEvaluator(judicialRecordArchive)
-        ),
-        ScoreQualificationEvaluator(
-            prospectQualifier
-        )
-    )
-
-    suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
-        return evaluator.evaluate(command)
-    }
-
+    suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome
 }
