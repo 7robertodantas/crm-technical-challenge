@@ -1,6 +1,6 @@
 package com.addi.business.service
 
-import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.evaluator.core.PipelineParameters
 import com.addi.business.evaluator.core.EvaluationOutcome
 
 /**
@@ -10,11 +10,11 @@ import com.addi.business.evaluator.core.EvaluationOutcome
 interface LeadProspectService {
 
     /**
-     * @param command the command that contains relevant data of the lead to process
+     * @param parameters the command that contains relevant data of the lead to process
      * the evaluation to convert into a prospect.
      *
      * @return an evaluation outcome that contains a flag that can determine whether
      * the lead was converted or not, and error if present.
      */
-    suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome
+    suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome
 }

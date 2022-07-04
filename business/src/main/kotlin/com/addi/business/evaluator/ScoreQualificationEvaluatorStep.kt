@@ -1,9 +1,11 @@
 package com.addi.business.evaluator
 
 import com.addi.business.domain.command.GetProspectQualificationCommand
-import com.addi.business.domain.command.LeadEvaluateCommand
-import com.addi.business.evaluator.core.LeadEvaluator
+import com.addi.business.evaluator.core.PipelineParameters
+import com.addi.business.evaluator.core.EvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.evaluator.core.EvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION
 import com.addi.business.evaluator.core.EvaluationOutcome
+import com.addi.business.evaluator.core.EvaluatorStep
 import com.addi.business.thirdparty.adapter.ProspectQualifier
 
 /**
@@ -13,23 +15,26 @@ import com.addi.business.thirdparty.adapter.ProspectQualifier
  * person. This system outputs a random score between 0 and 100. A lead could
  * be turned into prospect if the score is greater than 60.
  */
-class ScoreQualificationEvaluator(
+class ScoreQualificationEvaluatorStep(
     private val prospectQualifier: ProspectQualifier,
     private val minimumScore: Int = DEFAULT_MINIMUM_SCORE
-) : LeadEvaluator {
-    override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
+) : EvaluatorStep {
+    override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome {
         try {
-            val qualification = prospectQualifier.getScore(GetProspectQualificationCommand(command.nationalIdNumber))
+            val qualification = prospectQualifier.getScore(GetProspectQualificationCommand(parameters.get(NATIONAL_ID_NUMBER)))
             if (qualification.score <= minimumScore) {
                 return EvaluationOutcome.fail("lead score '${qualification.score}' returned is below minimum score of '$minimumScore'");
             }
 
-            return EvaluationOutcome.success()
+            return EvaluationOutcome.success(
+                mapOf(
+                    PERSON_HAS_SCORE_QUALIFICATION to "true"
+                )
+            )
         } catch (ex: Exception) {
             return EvaluationOutcome.fail(ex)
         }
     }
-
 
     companion object {
         const val DEFAULT_MINIMUM_SCORE = 60

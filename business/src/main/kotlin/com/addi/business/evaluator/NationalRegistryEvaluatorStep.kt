@@ -2,10 +2,12 @@ package com.addi.business.evaluator
 
 import com.addi.business.domain.Person
 import com.addi.business.domain.command.GetPersonDataCommand
-import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.evaluator.core.PipelineParameters
 import com.addi.business.domain.exceptions.PersonNotFoundException
+import com.addi.business.evaluator.core.EvaluationBucket
+import com.addi.business.evaluator.core.EvaluationBucket.NATIONAL_ID_NUMBER
 import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.evaluator.core.LeadEvaluator
+import com.addi.business.evaluator.core.EvaluatorStep
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.PersonRepository
 
@@ -16,14 +18,14 @@ import com.addi.business.thirdparty.adapter.PersonRepository
  * and their personal information should match the information stored in our
  * local database.
  */
-class NationalRegistryEvaluator(
+class NationalRegistryEvaluatorStep(
     private val nationalRegistry: NationalRegistry,
     private val personRepository: PersonRepository
-) : LeadEvaluator {
+) : EvaluatorStep {
 
-    override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
+    override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome {
         try {
-            val registry = nationalRegistry.getRegistry(GetPersonDataCommand(command.nationalIdNumber))
+            val registry = nationalRegistry.getRegistry(GetPersonDataCommand(parameters.get(NATIONAL_ID_NUMBER)))
 
             val person = Person(
                 nationalIdNumber = registry.nationalIdNumber,
@@ -36,7 +38,12 @@ class NationalRegistryEvaluator(
                 return EvaluationOutcome.fail("personal information does not match")
             }
 
-            return EvaluationOutcome.success()
+            return EvaluationOutcome.success(
+                mapOf(
+                    EvaluationBucket.PERSON_EXISTS to "true",
+                    EvaluationBucket.PERSON_MATCHES_INTERNAL to "true"
+                )
+            )
 
         } catch (ex: PersonNotFoundException) {
             return EvaluationOutcome.fail("person does not exist on national registry identification")

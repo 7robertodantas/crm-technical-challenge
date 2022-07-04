@@ -1,13 +1,13 @@
 package com.addi.business.service
 
-import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.evaluator.core.PipelineParameters
 import com.addi.business.thirdparty.adapter.PersonRepository
-import com.addi.business.evaluator.JudicialRecordsEvaluator
-import com.addi.business.evaluator.NationalRegistryEvaluator
-import com.addi.business.evaluator.ScoreQualificationEvaluator
+import com.addi.business.evaluator.JudicialRecordsEvaluatorStep
+import com.addi.business.evaluator.NationalRegistryEvaluatorStep
+import com.addi.business.evaluator.ScoreQualificationEvaluatorStep
 import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.evaluator.core.ParallelEvaluator
-import com.addi.business.evaluator.core.SequentialEvaluator
+import com.addi.business.evaluator.core.ParallelPipelineStep
+import com.addi.business.evaluator.core.SequentialPipelineStep
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.ProspectQualifier
@@ -22,6 +22,17 @@ class LeadProspectServiceImpl(
     coroutineContext: CoroutineContext = Dispatchers.Default
 ): LeadProspectService {
 
+    private val nationalRegistryStep = NationalRegistryEvaluatorStep(nationalRegistry, personRepository)
+    private val judicialRecordsStep = JudicialRecordsEvaluatorStep(judicialRecordArchive)
+    private val scoreQualificationStep  = ScoreQualificationEvaluatorStep(prospectQualifier)
+    private val nationalRegistryAndJudicialStep = ParallelPipelineStep(
+        coroutineContext = coroutineContext,
+        steps = listOf(
+            nationalRegistryStep,
+            judicialRecordsStep
+        )
+    )
+
     /**
      * This instantiates an evaluator that will evaluate
      * in the following order:
@@ -35,19 +46,18 @@ class LeadProspectServiceImpl(
      * |    |--------------[0]--------------| |--------------[1]--------------|     |
      * |----------------------------------------------------------------------------|
      */
-    private val evaluator = SequentialEvaluator(
-        ParallelEvaluator(
-            coroutineContext,
-            NationalRegistryEvaluator(nationalRegistry, personRepository),
-            JudicialRecordsEvaluator(judicialRecordArchive)
-        ),
-        ScoreQualificationEvaluator(
-            prospectQualifier
+    private val evaluator = SequentialPipelineStep(
+        steps = listOf(
+            nationalRegistryAndJudicialStep,
+            scoreQualificationStep
         )
     )
 
-    override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
-        return evaluator.evaluate(command)
+    /**
+     * Performs all validations and returns a single evaluation outcome with the result.
+     */
+    override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome {
+        return evaluator.evaluate(parameters)
     }
 
 }

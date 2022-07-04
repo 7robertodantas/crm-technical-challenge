@@ -1,7 +1,5 @@
 package com.addi.business.evaluator.core
 
-import com.addi.business.domain.command.LeadEvaluateCommand
-
 /**
  * This can be used to compose a chain of evaluators
  * that will execute the evaluate in sequence.
@@ -14,15 +12,15 @@ import com.addi.business.domain.command.LeadEvaluateCommand
  *      success -> success -> fail("some reason")   should return fail("some reason") and won't apply the 4th.
  *      success -> success -> success -> success    should return success
  */
-class SequentialEvaluator(
-    private val evaluators: List<LeadEvaluator>
-) : LeadEvaluator {
+class SequentialPipelineStep(
+    private val steps: List<EvaluatorStep>
+) : EvaluatorStep {
 
-    constructor(vararg evaluators: LeadEvaluator) : this(evaluators.toList())
+    constructor(vararg steps: EvaluatorStep) : this(steps.toList())
 
-    override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
-        return evaluators.fold(EvaluationOutcome.success()) { outcome, next ->
-            outcome.flatMap { next.evaluate(command) }
+    override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome {
+        return steps.fold(EvaluationOutcome.success(parameters.parameters)) { outcome, next ->
+            outcome.flatMap { next.evaluate(PipelineParameters(outcome.parameters)) }
         }
     }
 }

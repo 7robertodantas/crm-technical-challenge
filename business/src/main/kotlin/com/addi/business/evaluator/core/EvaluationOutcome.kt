@@ -1,9 +1,7 @@
 package com.addi.business.evaluator.core
 
-import java.lang.Exception
-
 /**
- * This represents an outcome of a lead evaluation.
+ * This represents an outcome of an evaluation.
  *
  * If the converted flag is true, then it is succeeded.
  * If the converted flag is false, then it has failed for some reason.
@@ -11,8 +9,9 @@ import java.lang.Exception
  * The error parameter may contain additional information about the failure.
  */
 data class EvaluationOutcome(
-    val converted: Boolean,
-    val error: String?
+    val success: Boolean,
+    val error: String?,
+    val parameters: Map<EvaluationBucket, String>
 ) {
 
     /**
@@ -22,7 +21,7 @@ data class EvaluationOutcome(
      */
     fun combine(other: EvaluationOutcome): EvaluationOutcome {
         return if (isFail()) this
-        else other
+        else EvaluationOutcome(other.success, other.error, other.parameters + parameters)
     }
 
     /**
@@ -40,36 +39,46 @@ data class EvaluationOutcome(
      */
     suspend fun flatMap(fn: suspend (EvaluationOutcome) -> EvaluationOutcome) : EvaluationOutcome {
         return if (isFail()) this
-        else fn(this)
+        else combine(fn(this))
     }
 
     /**
      * Returns whether this outcome represents a failure.
      */
-    fun isFail(): Boolean = !converted && error != null
+    fun isFail(): Boolean = !success
 
     /**
      * Returns whether this outcome represents a success.
      */
-    fun isSuccess(): Boolean = !isFail()
+    fun isSuccess(): Boolean = success
 
     companion object {
         fun fail(ex: Exception): EvaluationOutcome =
             EvaluationOutcome(
-                converted = false,
-                error = "something went wrong. ${ex.message}"
+                success = false,
+                error = "something went wrong. ${ex.message}",
+                parameters = emptyMap()
             )
 
-        fun fail(error: String): EvaluationOutcome =
+        fun fail(error: String, parameters: Map<EvaluationBucket, String> = emptyMap()): EvaluationOutcome =
             EvaluationOutcome(
-                converted = false,
-                error = error
+                success = false,
+                error = error,
+                parameters = parameters
             )
 
         fun success(): EvaluationOutcome =
             EvaluationOutcome(
-                converted = true,
-                error = null
+                success = true,
+                error = null,
+                parameters = emptyMap()
+            )
+
+        fun success(parameters: Map<EvaluationBucket, String>) =
+            EvaluationOutcome(
+                success = true,
+                error = null,
+                parameters = parameters
             )
     }
 }

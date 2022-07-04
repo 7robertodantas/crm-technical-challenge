@@ -26,7 +26,9 @@ internal class EvaluationOutcomeTest {
     @Test
     fun `combine should return next success if current is succeed`() {
         val succeeded = EvaluationOutcome.success()
-        val otherSucceeded = mockkClass(EvaluationOutcome::class)
+        val otherSucceeded = EvaluationOutcome.success(mapOf(
+            EvaluationBucket.PERSON_EXISTS to "true"
+        ))
 
         assertThat(succeeded.combine(otherSucceeded)).isEqualTo(otherSucceeded)
     }
@@ -42,11 +44,15 @@ internal class EvaluationOutcomeTest {
 
     @Test
     fun `flatmap should apply function if current is succeed`() {
-        val succeeded = EvaluationOutcome.success()
-        val otherSucceeded = mockkClass(EvaluationOutcome::class)
+        val succeeded = EvaluationOutcome.success(mapOf(
+            EvaluationBucket.NATIONAL_ID_NUMBER to "01ed114c-76c8-445d-8f8e-8b4c750acea7"
+        ))
+        val otherSucceeded = EvaluationOutcome.success(mapOf(
+            EvaluationBucket.PERSON_EXISTS to "true"
+        ))
 
         val result = runBlocking { succeeded.flatMap { otherSucceeded } }
-        assertThat(result).isEqualTo(otherSucceeded)
+        assertThat(result).isEqualTo(otherSucceeded.combine(succeeded))
     }
 
     @Test

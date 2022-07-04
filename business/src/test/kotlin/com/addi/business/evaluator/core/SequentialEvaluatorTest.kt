@@ -1,6 +1,5 @@
 package com.addi.business.evaluator.core
 
-import com.addi.business.domain.command.LeadEvaluateCommand
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockkClass
@@ -11,27 +10,72 @@ import org.junit.jupiter.api.Test
 internal class SequentialEvaluatorTest {
 
     private val nationalNumber = "4a5230dc"
-    private val leadEvaluateCommand = LeadEvaluateCommand(nationalNumber)
+    private val initialBucket: Map<EvaluationBucket, String> = mapOf(
+    EvaluationBucket.NATIONAL_ID_NUMBER to nationalNumber
+    )
+    private val leadEvaluateCommand = PipelineParameters(initialBucket)
+
+    @Test
+    fun `it should accumulate parameters`() {
+        val evaluatorA = mockkClass(EvaluatorStep::class)
+        val evaluatorB = mockkClass(EvaluatorStep::class)
+        val evaluatorC = mockkClass(EvaluatorStep::class)
+
+        val outcomeA = mapOf(
+            EvaluationBucket.PERSON_EXISTS to "true"
+        )
+
+        val outcomeB = mapOf(
+            EvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS to "true"
+        )
+
+        val outcomeC = mapOf(
+            EvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS to "true"
+        )
+        val leadEvaluateCommandA = PipelineParameters(initialBucket)
+        val leadEvaluateCommandB = PipelineParameters(initialBucket + outcomeA)
+        val leadEvaluateCommandC = PipelineParameters(initialBucket + outcomeA + outcomeB)
+
+        coEvery { evaluatorA.evaluate(eq(leadEvaluateCommandA)) } returns EvaluationOutcome.success(outcomeA)
+        coEvery { evaluatorB.evaluate(eq(leadEvaluateCommandB)) } returns EvaluationOutcome.success(outcomeB)
+        coEvery { evaluatorC.evaluate(eq(leadEvaluateCommandC)) } returns EvaluationOutcome.success(outcomeC)
+
+        val sequentialEvaluator = SequentialPipelineStep(
+            evaluatorA, evaluatorB, evaluatorC
+        )
+
+        val result = runBlocking { sequentialEvaluator.evaluate(leadEvaluateCommand) }
+        Assertions.assertThat(result.success).isTrue
+        Assertions.assertThat(result.isFail()).isFalse
+        Assertions.assertThat(result.isSuccess()).isTrue
+        Assertions.assertThat(result).isEqualTo(EvaluationOutcome.success(
+            initialBucket + outcomeA + outcomeB + outcomeC
+        ))
+
+        coVerify(exactly = 1) { evaluatorA.evaluate(eq(leadEvaluateCommandA)) }
+        coVerify(exactly = 1) { evaluatorB.evaluate(eq(leadEvaluateCommandB)) }
+        coVerify(exactly = 1) { evaluatorC.evaluate(eq(leadEvaluateCommandC)) }
+    }
 
     @Test
     fun `it should evaluate all in sequence`() {
-        val evaluatorA = mockkClass(LeadEvaluator::class)
-        val evaluatorB = mockkClass(LeadEvaluator::class)
-        val evaluatorC = mockkClass(LeadEvaluator::class)
+        val evaluatorA = mockkClass(EvaluatorStep::class)
+        val evaluatorB = mockkClass(EvaluatorStep::class)
+        val evaluatorC = mockkClass(EvaluatorStep::class)
 
         coEvery { evaluatorA.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.success()
         coEvery { evaluatorB.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.success()
         coEvery { evaluatorC.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.success()
 
-        val sequentialEvaluator = SequentialEvaluator(
+        val sequentialEvaluator = SequentialPipelineStep(
            evaluatorA, evaluatorB, evaluatorC
         )
 
         val result = runBlocking { sequentialEvaluator.evaluate(leadEvaluateCommand) }
-        Assertions.assertThat(result.converted).isTrue
+        Assertions.assertThat(result.success).isTrue
         Assertions.assertThat(result.isFail()).isFalse
         Assertions.assertThat(result.isSuccess()).isTrue
-        Assertions.assertThat(result).isEqualTo(EvaluationOutcome.success())
+        Assertions.assertThat(result).isEqualTo(EvaluationOutcome.success(initialBucket))
 
         coVerify(exactly = 1) { evaluatorA.evaluate(eq(leadEvaluateCommand)) }
         coVerify(exactly = 1) { evaluatorB.evaluate(eq(leadEvaluateCommand)) }
@@ -40,23 +84,23 @@ internal class SequentialEvaluatorTest {
 
     @Test
     fun `it should fail first and not execute following`() {
-        val evaluatorA = mockkClass(LeadEvaluator::class)
-        val evaluatorB = mockkClass(LeadEvaluator::class)
-        val evaluatorC = mockkClass(LeadEvaluator::class)
+        val evaluatorA = mockkClass(EvaluatorStep::class)
+        val evaluatorB = mockkClass(EvaluatorStep::class)
+        val evaluatorC = mockkClass(EvaluatorStep::class)
 
         coEvery { evaluatorA.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.success()
         coEvery { evaluatorB.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.fail("Something went wrong with B")
         coEvery { evaluatorC.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.success()
 
-        val sequentialEvaluator = SequentialEvaluator(
+        val sequentialEvaluator = SequentialPipelineStep(
             evaluatorA, evaluatorB, evaluatorC
         )
 
         val result = runBlocking { sequentialEvaluator.evaluate(leadEvaluateCommand) }
-        Assertions.assertThat(result.converted).isFalse
+        Assertions.assertThat(result.success).isFalse
         Assertions.assertThat(result.isFail()).isTrue
         Assertions.assertThat(result.isSuccess()).isFalse
-        Assertions.assertThat(result).isEqualTo(EvaluationOutcome.fail("Something went wrong with B"))
+        Assertions.assertThat(result).isEqualTo(EvaluationOutcome.fail("Something went wrong with B", initialBucket))
 
         coVerify(exactly = 1) { evaluatorA.evaluate(eq(leadEvaluateCommand)) }
         coVerify(exactly = 1) { evaluatorB.evaluate(eq(leadEvaluateCommand)) }
@@ -65,23 +109,23 @@ internal class SequentialEvaluatorTest {
 
     @Test
     fun `it should fail if last fails`() {
-        val evaluatorA = mockkClass(LeadEvaluator::class)
-        val evaluatorB = mockkClass(LeadEvaluator::class)
-        val evaluatorC = mockkClass(LeadEvaluator::class)
+        val evaluatorA = mockkClass(EvaluatorStep::class)
+        val evaluatorB = mockkClass(EvaluatorStep::class)
+        val evaluatorC = mockkClass(EvaluatorStep::class)
 
         coEvery { evaluatorA.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.success()
         coEvery { evaluatorB.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.success()
-        coEvery { evaluatorC.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.fail("Something went wrong with C")
+        coEvery { evaluatorC.evaluate(eq(leadEvaluateCommand)) } returns EvaluationOutcome.fail("Something went wrong with C", initialBucket)
 
-        val sequentialEvaluator = SequentialEvaluator(
+        val sequentialEvaluator = SequentialPipelineStep(
             evaluatorA, evaluatorB, evaluatorC
         )
 
         val result = runBlocking { sequentialEvaluator.evaluate(leadEvaluateCommand) }
-        Assertions.assertThat(result.converted).isFalse
+        Assertions.assertThat(result.success).isFalse
         Assertions.assertThat(result.isFail()).isTrue
         Assertions.assertThat(result.isSuccess()).isFalse
-        Assertions.assertThat(result).isEqualTo(EvaluationOutcome.fail("Something went wrong with C"))
+        Assertions.assertThat(result).isEqualTo(EvaluationOutcome.fail("Something went wrong with C", initialBucket))
 
         coVerify(exactly = 1) { evaluatorA.evaluate(eq(leadEvaluateCommand)) }
         coVerify(exactly = 1) { evaluatorB.evaluate(eq(leadEvaluateCommand)) }

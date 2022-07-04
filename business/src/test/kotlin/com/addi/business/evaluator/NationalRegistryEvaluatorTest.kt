@@ -1,13 +1,14 @@
 package com.addi.business.evaluator
 
 import com.addi.business.domain.command.GetPersonDataCommand
-import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.evaluator.core.PipelineParameters
 import com.addi.business.thirdparty.adapter.PersonRepository
 import com.addi.business.domain.Person
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.domain.PersonRegistry
 import com.addi.business.domain.exceptions.PersonNotFoundException
+import com.addi.business.evaluator.core.EvaluationBucket
 import io.mockk.coEvery
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking
@@ -19,11 +20,13 @@ internal class NationalRegistryEvaluatorTest {
 
     private val nationalNumber = "91c39365"
     private val getPersonDataCommand = GetPersonDataCommand(nationalNumber)
-    private val leadEvaluateCommand = LeadEvaluateCommand(nationalNumber)
+    private val leadEvaluateCommand = PipelineParameters(mapOf(
+        EvaluationBucket.NATIONAL_ID_NUMBER to nationalNumber
+    ))
 
     private val nationalRegistry = mockkClass(NationalRegistry::class)
     private val personRepository = mockkClass(PersonRepository::class)
-    private val evaluator = NationalRegistryEvaluator(
+    private val evaluator = NationalRegistryEvaluatorStep(
         nationalRegistry, personRepository
     )
 
@@ -37,7 +40,7 @@ internal class NationalRegistryEvaluatorTest {
         coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } throws PersonNotFoundException("could not find person")
 
         val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
-        assertThat(result.converted).isFalse
+        assertThat(result.success).isFalse
         assertThat(result.isFail()).isTrue
         assertThat(result.isSuccess()).isFalse
         assertThat(result).isEqualTo(EvaluationOutcome.fail("person does not exist on national registry identification"))
@@ -49,7 +52,7 @@ internal class NationalRegistryEvaluatorTest {
         coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } throws exception
 
         val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
-        assertThat(result.converted).isFalse
+        assertThat(result.success).isFalse
         assertThat(result.isFail()).isTrue
         assertThat(result.isSuccess()).isFalse
         assertThat(result).isEqualTo(EvaluationOutcome.fail(exception))
@@ -74,7 +77,7 @@ internal class NationalRegistryEvaluatorTest {
         ))) } returns false
 
         val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
-        assertThat(result.converted).isFalse
+        assertThat(result.success).isFalse
         assertThat(result.isFail()).isTrue
         assertThat(result.isSuccess()).isFalse
         assertThat(result).isEqualTo(EvaluationOutcome.fail("personal information does not match"))
@@ -99,10 +102,15 @@ internal class NationalRegistryEvaluatorTest {
         ))) } returns true
 
         val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
-        assertThat(result.converted).isTrue
+        assertThat(result.success).isTrue
         assertThat(result.isFail()).isFalse
         assertThat(result.isSuccess()).isTrue
-        assertThat(result).isEqualTo(EvaluationOutcome.success())
+        assertThat(result).isEqualTo(EvaluationOutcome.success(
+            mapOf(
+                EvaluationBucket.PERSON_EXISTS to "true",
+                EvaluationBucket.PERSON_MATCHES_INTERNAL to "true"
+            )
+        ))
     }
 
 }

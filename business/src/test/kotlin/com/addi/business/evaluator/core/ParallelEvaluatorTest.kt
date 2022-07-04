@@ -1,6 +1,5 @@
 package com.addi.business.evaluator.core
 
-import com.addi.business.domain.command.LeadEvaluateCommand
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockkClass
@@ -20,13 +19,15 @@ internal class ParallelEvaluatorTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val testScope = TestCoroutineScope(testDispatcher)
     private val nationalNumber = "64c277c3"
-    private val leadEvaluateCommand = LeadEvaluateCommand(nationalNumber)
+    private val leadEvaluateCommand = PipelineParameters(mapOf(
+        EvaluationBucket.NATIONAL_ID_NUMBER to nationalNumber
+    ))
 
     @Test
     fun `it should execute all in parallel and combine results even if one fails`() = testScope.runBlockingTest {
 
-        val leadEvaluatorA = mockkClass(LeadEvaluator::class)
-        val leadEvaluatorB = mockkClass(LeadEvaluator::class)
+        val leadEvaluatorA = mockkClass(EvaluatorStep::class)
+        val leadEvaluatorB = mockkClass(EvaluatorStep::class)
 
         coEvery { leadEvaluatorA.evaluate(eq(leadEvaluateCommand)) }
             .coAnswers {
@@ -38,7 +39,7 @@ internal class ParallelEvaluatorTest {
                 return@coAnswers EvaluationOutcome.success()
             }
 
-        val evaluator = ParallelEvaluator(
+        val evaluator = ParallelPipelineStep(
             testDispatcher,
             leadEvaluatorA,
             leadEvaluatorB
@@ -51,7 +52,7 @@ internal class ParallelEvaluatorTest {
         coVerify(exactly = 1) { leadEvaluatorA.evaluate(eq(leadEvaluateCommand)) }
         coVerify(exactly = 1) { leadEvaluatorB.evaluate(eq(leadEvaluateCommand)) }
 
-        assertThat(result.value.converted).isFalse
+        assertThat(result.value.success).isFalse
         assertThat(result.value.isFail()).isTrue
         assertThat(result.value.isSuccess()).isFalse
         assertThat(result.value).isEqualTo(EvaluationOutcome.fail("something went wrong with A"))
@@ -60,8 +61,8 @@ internal class ParallelEvaluatorTest {
     @Test
     fun `it should execute all in parallel and combine results all succeed`() = testScope.runBlockingTest {
 
-        val leadEvaluatorA = mockkClass(LeadEvaluator::class)
-        val leadEvaluatorB = mockkClass(LeadEvaluator::class)
+        val leadEvaluatorA = mockkClass(EvaluatorStep::class)
+        val leadEvaluatorB = mockkClass(EvaluatorStep::class)
 
         coEvery { leadEvaluatorA.evaluate(eq(leadEvaluateCommand)) }
             .coAnswers {
@@ -73,7 +74,7 @@ internal class ParallelEvaluatorTest {
                 return@coAnswers EvaluationOutcome.success()
             }
 
-        val evaluator = ParallelEvaluator(
+        val evaluator = ParallelPipelineStep(
             testDispatcher,
             leadEvaluatorA,
             leadEvaluatorB
@@ -86,7 +87,7 @@ internal class ParallelEvaluatorTest {
         coVerify(exactly = 1) { leadEvaluatorA.evaluate(eq(leadEvaluateCommand)) }
         coVerify(exactly = 1) { leadEvaluatorB.evaluate(eq(leadEvaluateCommand)) }
 
-        assertThat(result.value.converted).isTrue
+        assertThat(result.value.success).isTrue
         assertThat(result.value.isFail()).isFalse
         assertThat(result.value.isSuccess()).isTrue
         assertThat(result.value).isEqualTo(EvaluationOutcome.success())

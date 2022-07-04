@@ -1,6 +1,5 @@
 package com.addi.business.evaluator.core
 
-import com.addi.business.domain.command.LeadEvaluateCommand
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -24,21 +23,18 @@ import kotlin.coroutines.CoroutineContext
  *      success | success | fail("some reason") | success   should return fail("some reason")
  *      success | success | success | success               should return success
  */
-class ParallelEvaluator(
-    private val evaluators: List<LeadEvaluator>,
+class ParallelPipelineStep(
+    private val steps: List<EvaluatorStep>,
     private val coroutineContext: CoroutineContext = Dispatchers.Default
-) : LeadEvaluator {
-
-    constructor(
-        vararg evaluators: LeadEvaluator): this(evaluators.toList())
+) : EvaluatorStep {
 
     constructor(
         coroutineContext: CoroutineContext = Dispatchers.Default,
-        vararg evaluators: LeadEvaluator): this(evaluators.toList(), coroutineContext)
+        vararg steps: EvaluatorStep): this(steps.toList(), coroutineContext)
 
-    override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome = withContext(coroutineContext) {
-        evaluators
-            .map { evaluator -> async { evaluator.evaluate(command) } }
+    override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome = withContext(coroutineContext) {
+        steps
+            .map { evaluator -> async { evaluator.evaluate(parameters) } }
             .awaitAll()
             .reduce(EvaluationOutcome::combine)
     }

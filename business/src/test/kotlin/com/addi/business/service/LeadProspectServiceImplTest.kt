@@ -5,8 +5,9 @@ import com.addi.business.domain.PersonRegistry
 import com.addi.business.domain.ProspectQualification
 import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.command.GetProspectQualificationCommand
-import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.evaluator.core.PipelineParameters
 import com.addi.business.domain.exceptions.PersonNotFoundException
+import com.addi.business.evaluator.core.EvaluationBucket
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.PersonRepository
@@ -41,7 +42,9 @@ internal class LeadProspectServiceImplTest {
     )
 
     private val nationalIdNumber = "b4c28fef"
-    private val leadEvaluateCommand = LeadEvaluateCommand(nationalIdNumber)
+    private val leadEvaluateCommand = PipelineParameters(mapOf(
+        EvaluationBucket.NATIONAL_ID_NUMBER to nationalIdNumber
+    ))
     private val getPersonDataCommand = GetPersonDataCommand(nationalIdNumber)
     private val getProspectCommand = GetProspectQualificationCommand(nationalIdNumber)
 
