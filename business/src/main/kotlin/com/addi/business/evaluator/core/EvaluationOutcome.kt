@@ -1,5 +1,7 @@
 package com.addi.business.evaluator.core
 
+import java.lang.Exception
+
 /**
  * This represents an outcome of a lead evaluation.
  *
@@ -52,6 +54,12 @@ data class EvaluationOutcome(
     fun isSuccess(): Boolean = !isFail()
 
     companion object {
+        fun fail(ex: Exception): EvaluationOutcome =
+            EvaluationOutcome(
+                converted = false,
+                error = "something went wrong. ${ex.message}"
+            )
+
         fun fail(error: String): EvaluationOutcome =
             EvaluationOutcome(
                 converted = false,
