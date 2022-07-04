@@ -1,5 +1,6 @@
 package com.addi.business.evaluator.core
 
+import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockkClass
@@ -20,7 +21,7 @@ internal class ParallelEvaluatorTest {
     private val testScope = TestCoroutineScope(testDispatcher)
     private val nationalNumber = "64c277c3"
     private val leadEvaluateCommand = PipelineParameters(mapOf(
-        EvaluationBucket.NATIONAL_ID_NUMBER to nationalNumber
+        NATIONAL_ID_NUMBER to nationalNumber
     ))
 
     @Test

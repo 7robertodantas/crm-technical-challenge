@@ -1,14 +1,16 @@
 package com.addi.business.evaluator
 
-import com.addi.business.domain.command.GetPersonDataCommand
-import com.addi.business.evaluator.core.PipelineParameters
-import com.addi.business.thirdparty.adapter.PersonRepository
 import com.addi.business.domain.Person
-import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.domain.PersonRegistry
+import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.evaluator.core.EvaluationBucket
+import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_EXISTS
+import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_MATCHES_INTERNAL
+import com.addi.business.evaluator.core.EvaluationOutcome
+import com.addi.business.evaluator.core.PipelineParameters
+import com.addi.business.thirdparty.adapter.NationalRegistry
+import com.addi.business.thirdparty.adapter.PersonRepository
 import io.mockk.coEvery
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking
@@ -21,7 +23,7 @@ internal class NationalRegistryEvaluatorTest {
     private val nationalNumber = "91c39365"
     private val getPersonDataCommand = GetPersonDataCommand(nationalNumber)
     private val leadEvaluateCommand = PipelineParameters(mapOf(
-        EvaluationBucket.NATIONAL_ID_NUMBER to nationalNumber
+        NATIONAL_ID_NUMBER to nationalNumber
     ))
 
     private val nationalRegistry = mockkClass(NationalRegistry::class)
@@ -107,8 +109,8 @@ internal class NationalRegistryEvaluatorTest {
         assertThat(result.isSuccess()).isTrue
         assertThat(result).isEqualTo(EvaluationOutcome.success(
             mapOf(
-                EvaluationBucket.PERSON_EXISTS to "true",
-                EvaluationBucket.PERSON_MATCHES_INTERNAL to "true"
+                PERSON_EXISTS to "true",
+                PERSON_MATCHES_INTERNAL to "true"
             )
         ))
     }

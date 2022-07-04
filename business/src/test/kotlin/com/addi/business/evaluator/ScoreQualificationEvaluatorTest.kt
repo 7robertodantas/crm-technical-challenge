@@ -5,6 +5,7 @@ import com.addi.business.evaluator.core.PipelineParameters
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.ProspectQualifier
 import com.addi.business.domain.ProspectQualification
+import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION
 import com.addi.business.evaluator.core.EvaluationBucket
 import io.mockk.coEvery
 import io.mockk.mockkClass
@@ -16,7 +17,7 @@ internal class ScoreQualificationEvaluatorTest {
 
     private val nationalIdNumber = "c02f4e2c"
     private val leadEvaluateCommand = PipelineParameters(mapOf(
-        EvaluationBucket.NATIONAL_ID_NUMBER to nationalIdNumber
+        LeadEvaluationBucket.NATIONAL_ID_NUMBER to nationalIdNumber
     ))
     private val getScoreCommand = GetProspectQualificationCommand(nationalIdNumber)
 
@@ -68,7 +69,7 @@ internal class ScoreQualificationEvaluatorTest {
             assertThat(result).isEqualTo(
                 EvaluationOutcome.success(
                     mapOf(
-                        EvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION to "true"
+                        PERSON_HAS_SCORE_QUALIFICATION to "true"
                     )
                 )
             )

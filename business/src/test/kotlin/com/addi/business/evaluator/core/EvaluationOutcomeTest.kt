@@ -1,5 +1,8 @@
 package com.addi.business.evaluator.core
 
+import com.addi.business.evaluator.LeadEvaluationBucket
+import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_EXISTS
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
@@ -27,7 +30,7 @@ internal class EvaluationOutcomeTest {
     fun `combine should return next success if current is succeed`() {
         val succeeded = EvaluationOutcome.success()
         val otherSucceeded = EvaluationOutcome.success(mapOf(
-            EvaluationBucket.PERSON_EXISTS to "true"
+            PERSON_EXISTS to "true"
         ))
 
         assertThat(succeeded.combine(otherSucceeded)).isEqualTo(otherSucceeded)
@@ -45,10 +48,10 @@ internal class EvaluationOutcomeTest {
     @Test
     fun `flatmap should apply function if current is succeed`() {
         val succeeded = EvaluationOutcome.success(mapOf(
-            EvaluationBucket.NATIONAL_ID_NUMBER to "01ed114c-76c8-445d-8f8e-8b4c750acea7"
+            NATIONAL_ID_NUMBER to "01ed114c-76c8-445d-8f8e-8b4c750acea7"
         ))
         val otherSucceeded = EvaluationOutcome.success(mapOf(
-            EvaluationBucket.PERSON_EXISTS to "true"
+            PERSON_EXISTS to "true"
         ))
 
         val result = runBlocking { succeeded.flatMap { otherSucceeded } }

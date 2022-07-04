@@ -1,12 +1,13 @@
 package com.addi.business.evaluator
 
-import com.addi.business.domain.command.GetPersonDataCommand
-import com.addi.business.evaluator.core.PipelineParameters
-import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import com.addi.business.domain.JudicialRecord
+import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.evaluator.core.EvaluationBucket
+import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS
+import com.addi.business.evaluator.core.EvaluationOutcome
+import com.addi.business.evaluator.core.PipelineParameters
+import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import io.mockk.coEvery
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking
@@ -18,7 +19,7 @@ internal class JudicialRecordsEvaluatorTest {
     private val nationalNumber = "8e9bf29a"
     private val getPersonDataCommand = GetPersonDataCommand(nationalNumber)
     private val leadEvaluateCommand = PipelineParameters(mapOf(
-        EvaluationBucket.NATIONAL_ID_NUMBER to nationalNumber
+        NATIONAL_ID_NUMBER to nationalNumber
     ))
 
     private val judicialRecordArchive = mockkClass(JudicialRecordArchive::class)
@@ -80,7 +81,7 @@ internal class JudicialRecordsEvaluatorTest {
         assertThat(result.isSuccess()).isTrue
         assertThat(result).isEqualTo(EvaluationOutcome.success(
             mapOf(
-                EvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS to "true"
+                PERSON_HAS_JUDICIAL_RECORDS to "true"
             )
         ))
     }

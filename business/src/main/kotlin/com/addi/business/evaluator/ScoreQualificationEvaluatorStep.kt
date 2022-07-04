@@ -1,11 +1,11 @@
 package com.addi.business.evaluator
 
 import com.addi.business.domain.command.GetProspectQualificationCommand
-import com.addi.business.evaluator.core.PipelineParameters
-import com.addi.business.evaluator.core.EvaluationBucket.NATIONAL_ID_NUMBER
-import com.addi.business.evaluator.core.EvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION
+import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.evaluator.core.EvaluatorStep
+import com.addi.business.evaluator.core.PipelineParameters
 import com.addi.business.thirdparty.adapter.ProspectQualifier
 
 /**
