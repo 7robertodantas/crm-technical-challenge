@@ -22,6 +22,8 @@ class NationalRegistryEvaluator(
 
     override suspend fun evaluate(command: LeadEvaluateCommand): EvaluationOutcome {
         val registry = nationalRegistry.getRegistry(GetPersonDataCommand(command.nationalIdNumber))
+            ?: return EvaluationOutcome.fail("person does not exist on national registry identification")
+
         val person = Person(
             nationalIdNumber = registry.nationalIdNumber,
             birthDate = registry.birthDate,

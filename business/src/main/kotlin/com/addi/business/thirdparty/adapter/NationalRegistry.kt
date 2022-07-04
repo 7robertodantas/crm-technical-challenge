@@ -8,5 +8,5 @@ import com.addi.business.domain.PersonRegistry
  * This represents the national registry identification external system
  */
 interface NationalRegistry {
-    suspend fun getRegistry(command: GetPersonDataCommand): PersonRegistry
+    suspend fun getRegistry(command: GetPersonDataCommand): PersonRegistry?
 }

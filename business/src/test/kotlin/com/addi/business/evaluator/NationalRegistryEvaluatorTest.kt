@@ -32,6 +32,17 @@ internal class NationalRegistryEvaluatorTest {
     private val email = "foo@email.com"
 
     @Test
+    fun `it should fail if person does not exist`() {
+        coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } returns null
+
+        val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
+        assertThat(result.converted).isFalse
+        assertThat(result.isFail()).isTrue
+        assertThat(result.isSuccess()).isFalse
+        assertThat(result).isEqualTo(EvaluationOutcome.fail("person does not exist on national registry identification"))
+    }
+
+    @Test
     fun `it should fail if person data does not match`() {
         coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } returns PersonRegistry(
             nationalNumber,
