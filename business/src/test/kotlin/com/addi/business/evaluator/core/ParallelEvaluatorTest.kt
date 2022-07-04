@@ -1,6 +1,6 @@
 package com.addi.business.evaluator.core
 
-import com.addi.business.command.LeadEvaluateCommand
+import com.addi.business.domain.command.LeadEvaluateCommand
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockkClass

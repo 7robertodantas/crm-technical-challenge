@@ -1,4 +1,4 @@
-package com.addi.business.command
+package com.addi.business.domain.command
 
 data class LeadEvaluateCommand(
     val nationalIdNumber: String

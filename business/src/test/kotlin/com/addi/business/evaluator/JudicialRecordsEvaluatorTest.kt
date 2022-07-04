@@ -1,10 +1,10 @@
 package com.addi.business.evaluator
 
-import com.addi.business.command.GetPersonDataCommand
-import com.addi.business.command.LeadEvaluateCommand
+import com.addi.business.domain.command.GetPersonDataCommand
+import com.addi.business.domain.command.LeadEvaluateCommand
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
-import com.addi.business.thirdparty.dto.JudicialRecord
+import com.addi.business.domain.JudicialRecord
 import io.mockk.coEvery
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking

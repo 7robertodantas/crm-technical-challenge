@@ -1,4 +1,4 @@
-package com.addi.business.thirdparty.dto
+package com.addi.business.domain
 
 import java.time.LocalDate
 

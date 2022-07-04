@@ -1,4 +1,4 @@
-package com.addi.business.thirdparty.dto
+package com.addi.business.domain
 
 data class ProspectQualification(
     val score: Int

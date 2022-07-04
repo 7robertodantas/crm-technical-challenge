@@ -1,8 +1,8 @@
 package com.addi.business.evaluator
 
-import com.addi.business.command.GetPersonDataCommand
-import com.addi.business.command.LeadEvaluateCommand
-import com.addi.business.database.PersonRepository
+import com.addi.business.domain.command.GetPersonDataCommand
+import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.thirdparty.adapter.PersonRepository
 import com.addi.business.domain.Person
 import com.addi.business.evaluator.core.LeadEvaluator
 import com.addi.business.evaluator.core.EvaluationOutcome

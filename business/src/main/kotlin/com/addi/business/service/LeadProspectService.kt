@@ -1,7 +1,7 @@
 package com.addi.business.service
 
-import com.addi.business.command.LeadEvaluateCommand
-import com.addi.business.database.PersonRepository
+import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.thirdparty.adapter.PersonRepository
 import com.addi.business.evaluator.JudicialRecordsEvaluator
 import com.addi.business.evaluator.NationalRegistryEvaluator
 import com.addi.business.evaluator.ScoreQualificationEvaluator

@@ -1,3 +1,3 @@
-package com.addi.business.command
+package com.addi.business.domain.command
 
 data class GetProspectQualificationCommand(val nationalIdNumber: String)

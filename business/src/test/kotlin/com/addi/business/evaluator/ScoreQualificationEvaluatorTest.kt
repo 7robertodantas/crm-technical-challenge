@@ -1,10 +1,10 @@
 package com.addi.business.evaluator
 
-import com.addi.business.command.GetProspectQualificationCommand
-import com.addi.business.command.LeadEvaluateCommand
+import com.addi.business.domain.command.GetProspectQualificationCommand
+import com.addi.business.domain.command.LeadEvaluateCommand
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.ProspectQualifier
-import com.addi.business.thirdparty.dto.ProspectQualification
+import com.addi.business.domain.ProspectQualification
 import io.mockk.coEvery
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking

@@ -1,4 +1,4 @@
-package com.addi.business.database
+package com.addi.business.thirdparty.adapter
 
 import com.addi.business.domain.Person
 
