@@ -3,7 +3,7 @@ package com.addi.thirdparty
 import com.addi.business.domain.PersonRegistry
 import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.thirdparty.adapter.NationalRegistry
+import com.addi.business.adapter.NationalRegistry
 import org.slf4j.LoggerFactory
 import kotlin.time.ExperimentalTime
 

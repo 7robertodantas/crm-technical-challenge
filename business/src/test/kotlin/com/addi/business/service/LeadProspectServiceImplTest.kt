@@ -8,10 +8,10 @@ import com.addi.business.domain.command.GetProspectQualificationCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
 import com.addi.evaluator.core.PipelineParameters
-import com.addi.business.thirdparty.adapter.JudicialRecordArchive
-import com.addi.business.thirdparty.adapter.NationalRegistry
-import com.addi.business.thirdparty.adapter.PersonRepository
-import com.addi.business.thirdparty.adapter.ProspectQualifier
+import com.addi.business.adapter.JudicialRecordArchive
+import com.addi.business.adapter.NationalRegistry
+import com.addi.business.adapter.PersonRepository
+import com.addi.business.adapter.ProspectQualifier
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -6,7 +6,7 @@ import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_HAS_SCORE_
 import com.addi.evaluator.core.EvaluationOutcome
 import com.addi.evaluator.core.EvaluatorStep
 import com.addi.evaluator.core.PipelineParameters
-import com.addi.business.thirdparty.adapter.ProspectQualifier
+import com.addi.business.adapter.ProspectQualifier
 
 /**
  * This performs the following evaluation:

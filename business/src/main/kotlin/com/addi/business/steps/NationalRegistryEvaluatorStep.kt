@@ -9,8 +9,8 @@ import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_MATCHES_IN
 import com.addi.evaluator.core.EvaluationOutcome
 import com.addi.evaluator.core.EvaluatorStep
 import com.addi.evaluator.core.PipelineParameters
-import com.addi.business.thirdparty.adapter.NationalRegistry
-import com.addi.business.thirdparty.adapter.PersonRepository
+import com.addi.business.adapter.NationalRegistry
+import com.addi.business.adapter.PersonRepository
 
 /**
  * This performs the following evaluation:

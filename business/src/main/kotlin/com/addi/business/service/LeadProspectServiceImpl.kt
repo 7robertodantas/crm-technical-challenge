@@ -1,16 +1,16 @@
 package com.addi.business.service
 
 import com.addi.evaluator.core.PipelineParameters
-import com.addi.business.thirdparty.adapter.PersonRepository
+import com.addi.business.adapter.PersonRepository
 import com.addi.business.steps.JudicialRecordsEvaluatorStep
 import com.addi.business.steps.NationalRegistryEvaluatorStep
 import com.addi.business.steps.ScoreQualificationEvaluatorStep
 import com.addi.evaluator.core.EvaluationOutcome
 import com.addi.evaluator.core.ParallelPipelineStep
 import com.addi.evaluator.core.SequentialPipelineStep
-import com.addi.business.thirdparty.adapter.JudicialRecordArchive
-import com.addi.business.thirdparty.adapter.NationalRegistry
-import com.addi.business.thirdparty.adapter.ProspectQualifier
+import com.addi.business.adapter.JudicialRecordArchive
+import com.addi.business.adapter.NationalRegistry
+import com.addi.business.adapter.ProspectQualifier
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 

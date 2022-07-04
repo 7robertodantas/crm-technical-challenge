@@ -1,4 +1,4 @@
-package com.addi.business.thirdparty.adapter
+package com.addi.business.adapter
 
 import com.addi.business.domain.JudicialRecord
 import com.addi.business.domain.command.GetPersonDataCommand

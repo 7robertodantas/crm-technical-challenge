@@ -7,7 +7,7 @@ import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICI
 import com.addi.evaluator.core.EvaluationOutcome
 import com.addi.evaluator.core.EvaluatorStep
 import com.addi.evaluator.core.PipelineParameters
-import com.addi.business.thirdparty.adapter.JudicialRecordArchive
+import com.addi.business.adapter.JudicialRecordArchive
 
 /**
  * This performs the following evaluation:

@@ -3,7 +3,7 @@ package com.addi.thirdparty
 import com.addi.business.domain.JudicialRecord
 import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.thirdparty.adapter.JudicialRecordArchive
+import com.addi.business.adapter.JudicialRecordArchive
 import org.slf4j.LoggerFactory
 import kotlin.time.ExperimentalTime
 

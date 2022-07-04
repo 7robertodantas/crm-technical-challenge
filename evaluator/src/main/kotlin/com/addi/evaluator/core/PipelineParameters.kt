@@ -1,9 +1,7 @@
 package com.addi.evaluator.core
 
 /**
- * This represents a command to trigger the lead evaluation.
- *
- * @see com.addi.business.service.LeadProspectServiceImpl
+ * This represents a data that passes through each step
  */
 data class PipelineParameters(
     val parameters: Map<EvaluationBucket, String>

@@ -3,7 +3,7 @@ package com.addi.thirdparty
 import com.addi.business.domain.ProspectQualification
 import com.addi.business.domain.command.GetProspectQualificationCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.thirdparty.adapter.ProspectQualifier
+import com.addi.business.adapter.ProspectQualifier
 import org.slf4j.LoggerFactory
 import kotlin.time.ExperimentalTime
 
