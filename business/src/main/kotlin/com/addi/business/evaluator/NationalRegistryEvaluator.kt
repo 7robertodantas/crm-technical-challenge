@@ -8,6 +8,13 @@ import com.addi.business.evaluator.core.LeadEvaluator
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.NationalRegistry
 
+/**
+ * This performs the following evaluation:
+ *
+ * The person should exist in the national registry identification external system
+ * and their personal information should match the information stored in our
+ * local database.
+ */
 class NationalRegistryEvaluator(
     private val nationalRegistry: NationalRegistry,
     private val personRepository: PersonRepository

@@ -6,6 +6,12 @@ import com.addi.business.evaluator.core.LeadEvaluator
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 
+/**
+ * This performs the following evaluation:
+ *
+ * The person does not have any judicial records in the national archives'
+ * external system.
+ */
 class JudicialRecordsEvaluator(
     private val judicialRecordArchive: JudicialRecordArchive
 ) : LeadEvaluator {
