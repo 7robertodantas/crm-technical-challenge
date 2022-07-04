@@ -24,6 +24,19 @@ internal class ScoreQualificationEvaluatorTest {
     )
 
     @Test
+    fun `it should fail if some exception is thrown`() {
+        val exception = Exception("oh no!")
+        coEvery { prospectQualifier.getScore(eq(getScoreCommand)) } throws exception
+        val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
+        assertThat(result.converted).isFalse
+        assertThat(result.isFail()).isTrue
+        assertThat(result.isSuccess()).isFalse
+        assertThat(result).isEqualTo(
+            EvaluationOutcome.fail(exception)
+        )
+    }
+
+    @Test
     fun `it should fail if score is below minimum`() {
         (0..60).forEach { score ->
             coEvery { prospectQualifier.getScore(eq(getScoreCommand)) } returns ProspectQualification(
@@ -34,7 +47,7 @@ internal class ScoreQualificationEvaluatorTest {
             assertThat(result.isFail()).isTrue
             assertThat(result.isSuccess()).isFalse
             assertThat(result).isEqualTo(
-                EvaluationOutcome.fail("lead score is below minimum score of '$minimumScore'")
+                EvaluationOutcome.fail("lead score '$score' returned is below minimum score of '$minimumScore'")
             )
         }
     }
