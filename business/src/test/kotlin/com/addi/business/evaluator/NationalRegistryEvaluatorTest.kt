@@ -7,6 +7,7 @@ import com.addi.business.domain.Person
 import com.addi.business.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.domain.PersonRegistry
+import com.addi.business.domain.exceptions.PersonNotFoundException
 import io.mockk.coEvery
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking
@@ -33,13 +34,25 @@ internal class NationalRegistryEvaluatorTest {
 
     @Test
     fun `it should fail if person does not exist`() {
-        coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } returns null
+        coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } throws PersonNotFoundException("could not find person")
 
         val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
         assertThat(result.converted).isFalse
         assertThat(result.isFail()).isTrue
         assertThat(result.isSuccess()).isFalse
         assertThat(result).isEqualTo(EvaluationOutcome.fail("person does not exist on national registry identification"))
+    }
+
+    @Test
+    fun `it should fail if some exception is thrown`() {
+        val exception = Exception("could not connect")
+        coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } throws exception
+
+        val result = runBlocking { evaluator.evaluate(leadEvaluateCommand) }
+        assertThat(result.converted).isFalse
+        assertThat(result.isFail()).isTrue
+        assertThat(result.isSuccess()).isFalse
+        assertThat(result).isEqualTo(EvaluationOutcome.fail(exception))
     }
 
     @Test
