@@ -1,4 +1,4 @@
-package com.addi.business.evaluator.core
+package com.addi.evaluator.core
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -30,7 +30,8 @@ class ParallelPipelineStep(
 
     constructor(
         coroutineContext: CoroutineContext = Dispatchers.Default,
-        vararg steps: EvaluatorStep): this(steps.toList(), coroutineContext)
+        vararg steps: EvaluatorStep
+    ): this(steps.toList(), coroutineContext)
 
     override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome = withContext(coroutineContext) {
         steps

@@ -1,4 +1,4 @@
-package com.addi.business.evaluator.core
+package com.addi.evaluator.core
 
 /**
  * This represents an outcome of an evaluation.

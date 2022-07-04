@@ -1,14 +1,14 @@
-package com.addi.business.evaluator
+package com.addi.business.steps
 
 import com.addi.business.domain.Person
 import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
-import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_EXISTS
-import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_MATCHES_INTERNAL
-import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.evaluator.core.EvaluatorStep
-import com.addi.business.evaluator.core.PipelineParameters
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_EXISTS
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_MATCHES_INTERNAL
+import com.addi.evaluator.core.EvaluationOutcome
+import com.addi.evaluator.core.EvaluatorStep
+import com.addi.evaluator.core.PipelineParameters
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.PersonRepository
 

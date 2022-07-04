@@ -1,4 +1,4 @@
-package com.addi.business.evaluator.core
+package com.addi.evaluator.core
 
 /**
  * This represents a command to trigger the lead evaluation.

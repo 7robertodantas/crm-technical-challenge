@@ -1,13 +1,13 @@
 package com.addi.business.service
 
-import com.addi.business.evaluator.core.PipelineParameters
+import com.addi.evaluator.core.PipelineParameters
 import com.addi.business.thirdparty.adapter.PersonRepository
-import com.addi.business.evaluator.JudicialRecordsEvaluatorStep
-import com.addi.business.evaluator.NationalRegistryEvaluatorStep
-import com.addi.business.evaluator.ScoreQualificationEvaluatorStep
-import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.evaluator.core.ParallelPipelineStep
-import com.addi.business.evaluator.core.SequentialPipelineStep
+import com.addi.business.steps.JudicialRecordsEvaluatorStep
+import com.addi.business.steps.NationalRegistryEvaluatorStep
+import com.addi.business.steps.ScoreQualificationEvaluatorStep
+import com.addi.evaluator.core.EvaluationOutcome
+import com.addi.evaluator.core.ParallelPipelineStep
+import com.addi.evaluator.core.SequentialPipelineStep
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.ProspectQualifier

@@ -1,12 +1,12 @@
-package com.addi.business.evaluator
+package com.addi.business.steps
 
 import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
-import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS
-import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.evaluator.core.EvaluatorStep
-import com.addi.business.evaluator.core.PipelineParameters
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS
+import com.addi.evaluator.core.EvaluationOutcome
+import com.addi.evaluator.core.EvaluatorStep
+import com.addi.evaluator.core.PipelineParameters
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 
 /**

@@ -1,4 +1,4 @@
-package com.addi.business.evaluator.core
+package com.addi.evaluator.core
 
 /**
  * This can be used to compose a chain of evaluators

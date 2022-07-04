@@ -1,4 +1,4 @@
-package com.addi.business.evaluator.core
+package com.addi.evaluator.core
 
 /**
  * Interface that can hold a logic to evaluate something.

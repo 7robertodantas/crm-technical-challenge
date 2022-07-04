@@ -1,12 +1,12 @@
-package com.addi.business.evaluator
+package com.addi.business.steps
 
 import com.addi.business.domain.JudicialRecord
 import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
-import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
-import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS
-import com.addi.business.evaluator.core.EvaluationOutcome
-import com.addi.business.evaluator.core.PipelineParameters
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS
+import com.addi.evaluator.core.EvaluationOutcome
+import com.addi.evaluator.core.PipelineParameters
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import io.mockk.coEvery
 import io.mockk.mockkClass
@@ -79,7 +79,8 @@ internal class JudicialRecordsEvaluatorTest {
         assertThat(result.success).isTrue
         assertThat(result.isFail()).isFalse
         assertThat(result.isSuccess()).isTrue
-        assertThat(result).isEqualTo(EvaluationOutcome.success(
+        assertThat(result).isEqualTo(
+            EvaluationOutcome.success(
             mapOf(
                 PERSON_HAS_JUDICIAL_RECORDS to "true"
             )

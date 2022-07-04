@@ -1,12 +1,12 @@
-package com.addi.business.evaluator
+package com.addi.business.steps
 
+import com.addi.business.domain.evaluator.LeadEvaluationBucket
 import com.addi.business.domain.command.GetProspectQualificationCommand
-import com.addi.business.evaluator.core.PipelineParameters
-import com.addi.business.evaluator.core.EvaluationOutcome
+import com.addi.evaluator.core.PipelineParameters
+import com.addi.evaluator.core.EvaluationOutcome
 import com.addi.business.thirdparty.adapter.ProspectQualifier
 import com.addi.business.domain.ProspectQualification
-import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION
-import com.addi.business.evaluator.core.EvaluationBucket
+import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION
 import io.mockk.coEvery
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking

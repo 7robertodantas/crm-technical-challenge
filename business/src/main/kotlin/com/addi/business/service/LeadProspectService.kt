@@ -1,7 +1,7 @@
 package com.addi.business.service
 
-import com.addi.business.evaluator.core.PipelineParameters
-import com.addi.business.evaluator.core.EvaluationOutcome
+import com.addi.evaluator.core.PipelineParameters
+import com.addi.evaluator.core.EvaluationOutcome
 
 /**
  * This represents the business service that will apply the logic to evaluate

@@ -1,8 +1,5 @@
-package com.addi.business.evaluator.core
+package com.addi.evaluator.core
 
-import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
-import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_EXISTS
-import com.addi.business.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockkClass
@@ -10,11 +7,11 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
-internal class SequentialEvaluatorTest {
+internal class SequentialPipelineStepTest {
 
-    private val nationalNumber = "4a5230dc"
+    private val parameterAValue = "4a5230dc"
     private val initialBucket: Map<EvaluationBucket, String> = mapOf(
-        NATIONAL_ID_NUMBER to nationalNumber
+        TestBucket.TEST to parameterAValue
     )
     private val leadEvaluateCommand = PipelineParameters(initialBucket)
 
@@ -25,15 +22,15 @@ internal class SequentialEvaluatorTest {
         val evaluatorC = mockkClass(EvaluatorStep::class)
 
         val outcomeA = mapOf<EvaluationBucket, String>(
-            PERSON_EXISTS to "true"
+            TestBucket.A to "true"
         )
 
         val outcomeB = mapOf<EvaluationBucket, String>(
-            PERSON_HAS_JUDICIAL_RECORDS to "true"
+            TestBucket.B to "true"
         )
 
         val outcomeC = mapOf<EvaluationBucket, String>(
-            PERSON_HAS_JUDICIAL_RECORDS to "true"
+            TestBucket.C to "true"
         )
         val leadEvaluateCommandA = PipelineParameters(initialBucket)
         val leadEvaluateCommandB = PipelineParameters(initialBucket + outcomeA)

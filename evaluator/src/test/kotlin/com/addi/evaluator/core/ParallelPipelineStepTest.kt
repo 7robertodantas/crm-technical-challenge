@@ -1,6 +1,5 @@
-package com.addi.business.evaluator.core
+package com.addi.evaluator.core
 
-import com.addi.business.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockkClass
@@ -15,13 +14,13 @@ import kotlin.time.measureTimedValue
 
 @ExperimentalCoroutinesApi
 @ExperimentalTime
-internal class ParallelEvaluatorTest {
+internal class ParallelPipelineStepTest {
 
     private val testDispatcher = TestCoroutineDispatcher()
     private val testScope = TestCoroutineScope(testDispatcher)
-    private val nationalNumber = "64c277c3"
+    private val parameterAValue = "64c277c3"
     private val leadEvaluateCommand = PipelineParameters(mapOf(
-        NATIONAL_ID_NUMBER to nationalNumber
+        TestBucket.TEST to parameterAValue
     ))
 
     @Test
