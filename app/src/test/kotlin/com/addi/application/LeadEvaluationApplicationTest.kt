@@ -6,11 +6,12 @@ import com.addi.business.domain.ProspectQualification
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import kotlinx.coroutines.runBlocking
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.mockserver.configuration.Configuration
 import org.mockserver.integration.ClientAndServer
-import org.mockserver.junit.jupiter.MockServerExtension
 import org.mockserver.model.Delay
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
@@ -19,10 +20,11 @@ import java.time.LocalDate
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 
-
+/**
+ * Integration test
+ */
 @ExperimentalTime
-@ExtendWith(value = [MockServerExtension::class])
-internal class LeadEvaluationIntegrationTest(val mockServer: ClientAndServer) {
+internal class LeadEvaluationApplicationTest {
 
     private val mockServerUrl = "http://localhost:${mockServer.port}"
     private val objectMapper = jacksonMapperBuilder()
@@ -34,6 +36,25 @@ internal class LeadEvaluationIntegrationTest(val mockServer: ClientAndServer) {
         judicialArchiveUrl = mockServerUrl,
         prospectQualifierUrl = mockServerUrl,
     )
+
+    companion object {
+        private lateinit var mockServer: ClientAndServer
+
+        @JvmStatic
+        @BeforeAll
+        fun setup() {
+            mockServer = ClientAndServer.startClientAndServer(
+                Configuration.configuration()
+                .logLevel("WARN")
+            )
+        }
+
+        @JvmStatic
+        @AfterAll
+        fun teardown() {
+            mockServer.stop()
+        }
+    }
 
     @Test
     fun `it should execute whole flow`(): Unit = runBlocking {
@@ -87,7 +108,6 @@ internal class LeadEvaluationIntegrationTest(val mockServer: ClientAndServer) {
         )
 
         val result = app.evaluate(nationalIdNumber)
-        assertThat(result.isSuccess()).isTrue
+        Assertions.assertThat(result.isSuccess()).isTrue
     }
-
 }

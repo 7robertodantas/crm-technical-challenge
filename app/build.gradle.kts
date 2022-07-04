@@ -10,9 +10,9 @@ dependencies {
     implementation(project(":business"))
     implementation(project(":evaluator"))
     implementation(project(":third-party"))
+    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
 
     testImplementation("org.mock-server:mockserver-netty:5.13.2")
-    testImplementation("org.mock-server:mockserver-junit-jupiter:5.13.2")
 }
 
 tasks {
