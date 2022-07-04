@@ -13,7 +13,7 @@ class JudicialRecordArchiveClient(
 ) : BaseClient(baseUrl, logger, errorHandler), JudicialRecordArchive {
 
     companion object {
-        private val logger = LoggerFactory.getLogger(NationalRegistryClient::class.java)
+        private val logger = LoggerFactory.getLogger(JudicialRecordArchiveClient::class.java)
         private val errorHandler: ErrorHandler = { url, status, body ->
             when(status) {
                 NOT_FOUND -> PersonNotFoundException("Could not perform request to get judicial records at '$url'")
