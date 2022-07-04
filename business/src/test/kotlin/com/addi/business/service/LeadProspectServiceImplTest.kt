@@ -6,6 +6,7 @@ import com.addi.business.domain.ProspectQualification
 import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.command.GetProspectQualificationCommand
 import com.addi.business.domain.command.LeadEvaluateCommand
+import com.addi.business.domain.exceptions.PersonNotFoundException
 import com.addi.business.thirdparty.adapter.JudicialRecordArchive
 import com.addi.business.thirdparty.adapter.NationalRegistry
 import com.addi.business.thirdparty.adapter.PersonRepository
@@ -54,7 +55,7 @@ internal class LeadProspectServiceImplTest {
 
     @Test
     fun `it should fail if person does not exist on national registry`() = testScope.runBlockingTest {
-        coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } returns null
+        coEvery { nationalRegistry.getRegistry(eq(getPersonDataCommand)) } throws PersonNotFoundException("could not find person")
         coEvery { judicialRecordArchive.getRegistry(eq(getPersonDataCommand)) } returns JudicialRecord(nationalIdNumber, false)
 
         val result = leadProspectService.evaluate(leadEvaluateCommand)
