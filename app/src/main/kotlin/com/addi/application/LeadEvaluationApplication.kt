@@ -14,6 +14,7 @@ import com.addi.thirdparty.JudicialRecordArchiveClient
 import com.addi.thirdparty.NationalRegistryClient
 import com.addi.thirdparty.ProspectQualifierClient
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import java.util.UUID
 import kotlin.time.ExperimentalTime
 
@@ -50,6 +51,8 @@ class LeadEvaluationApplication(
     }
 
     companion object {
+        private val logger = LoggerFactory.getLogger(LeadEvaluationApplication::class.java)
+
         @JvmStatic
         fun main(args: Array<String>) {
             val app = LeadEvaluationApplication(
@@ -62,7 +65,8 @@ class LeadEvaluationApplication(
             )
 
             runBlocking {
-                app.evaluate(args.firstOrNull() ?: UUID.randomUUID().toString())
+                val result = app.evaluate(args.firstOrNull() ?: UUID.randomUUID().toString())
+                logger.info("Result is $result")
             }
         }
     }

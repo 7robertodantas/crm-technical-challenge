@@ -38,8 +38,11 @@ data class EvaluationOutcome(
      *      will return the failed instance.
      */
     suspend fun flatMap(fn: suspend (EvaluationOutcome) -> EvaluationOutcome) : EvaluationOutcome {
-        return if (isFail()) this
-        else combine(fn(this))
+        return if (isFail()) {
+            this
+        } else {
+            combine(fn(this))
+        }
     }
 
     /**
