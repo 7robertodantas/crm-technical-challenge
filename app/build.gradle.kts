@@ -25,6 +25,7 @@ tasks {
             .map { if (it.isDirectory) it else zipTree(it) } +
             sourcesMain.output
         from(contents)
+        exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA") // https://stackoverflow.com/questions/51455197/gradle-fatjar-could-not-find-or-load-main-class
     }
     build {
         dependsOn(fatJar) // Trigger fat jar creation during build
