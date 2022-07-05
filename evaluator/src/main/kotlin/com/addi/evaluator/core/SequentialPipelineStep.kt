@@ -24,9 +24,11 @@ class SequentialPipelineStep(
 
     override suspend fun evaluate(parameters: PipelineParameters): EvaluationOutcome {
         return steps.fold(EvaluationOutcome.success(parameters.parameters)) { outcome, next ->
-            val logger = LoggerFactory.getLogger(next.javaClass)
-            logger.info("Evaluating ${outcome.parameters}")
-            outcome.flatMap { next.evaluate(PipelineParameters(outcome.parameters)) }
+            outcome.flatMap {
+                val logger = LoggerFactory.getLogger(next.javaClass)
+                logger.info("Evaluating ${outcome.parameters}")
+                next.evaluate(PipelineParameters(outcome.parameters))
+            }
         }
     }
 }
