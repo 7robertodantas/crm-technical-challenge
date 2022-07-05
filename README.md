@@ -58,6 +58,6 @@ docker run --interactive --tty --rm app
 ### Running tests via docker
 
 ```bash
-docker run --rm -v $(pwd):/home/gradle/src gradle:6.9.2-jdk11 gradle --no-deamon -p /home/gradle/src test
+docker run --rm -v $(pwd):/home/gradle/src gradle:6.9.2-jdk11 gradle --no-daemon -p /home/gradle/src test
 ```
 **Important:** Need to execute on project root folder so that the $(pwd) will pick the correct folder.
