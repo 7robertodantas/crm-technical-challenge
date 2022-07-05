@@ -5,15 +5,15 @@
 
 ```bash
 ./gradlew clean fatJar
-java -jar ./app/build/libs/empty-kotlin-1.0-SNAPSHOT-standalone.jar
+java -jar ./app/build/libs/app-1.0-SNAPSHOT-standalone.jar
 ```
 
 ## Build and run via Dockerfile 
 
 ### Running via docker
 ```bash
-docker build . -t empty-kotlin
-docker run --interactive --tty --rm empty-kotlin
+docker build . -t app 
+docker run --interactive --tty --rm app
 ```
 
 ## Running Tests
