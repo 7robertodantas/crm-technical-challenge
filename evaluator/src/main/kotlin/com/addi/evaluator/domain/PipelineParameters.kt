@@ -1,4 +1,6 @@
-package com.addi.evaluator.core
+package com.addi.evaluator.domain
+
+import com.addi.evaluator.domain.EvaluationBucket
 
 /**
  * This represents a data that passes through each step

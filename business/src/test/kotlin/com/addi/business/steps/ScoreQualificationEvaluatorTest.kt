@@ -2,8 +2,8 @@ package com.addi.business.steps
 
 import com.addi.business.domain.evaluator.LeadEvaluationBucket
 import com.addi.business.domain.command.GetProspectQualificationCommand
-import com.addi.evaluator.core.PipelineParameters
-import com.addi.evaluator.core.EvaluationOutcome
+import com.addi.evaluator.domain.PipelineParameters
+import com.addi.evaluator.domain.EvaluationOutcome
 import com.addi.business.adapter.ProspectQualifier
 import com.addi.business.domain.ProspectQualification
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_HAS_SCORE_QUALIFICATION

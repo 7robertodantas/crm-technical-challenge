@@ -1,5 +1,8 @@
 package com.addi.evaluator.core
 
+import com.addi.evaluator.domain.EvaluationBucket
+import com.addi.evaluator.domain.EvaluationOutcome
+import com.addi.evaluator.domain.PipelineParameters
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockkClass

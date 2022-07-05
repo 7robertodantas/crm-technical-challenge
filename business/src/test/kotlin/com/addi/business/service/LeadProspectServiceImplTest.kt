@@ -7,7 +7,7 @@ import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.command.GetProspectQualificationCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
-import com.addi.evaluator.core.PipelineParameters
+import com.addi.evaluator.domain.PipelineParameters
 import com.addi.business.adapter.JudicialRecordArchive
 import com.addi.business.adapter.NationalRegistry
 import com.addi.business.adapter.PersonRepository

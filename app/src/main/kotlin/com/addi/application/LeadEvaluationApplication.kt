@@ -8,8 +8,8 @@ import com.addi.business.domain.Person
 import com.addi.business.domain.evaluator.LeadEvaluationBucket
 import com.addi.business.service.LeadProspectService
 import com.addi.business.service.LeadProspectServiceImpl
-import com.addi.evaluator.core.EvaluationOutcome
-import com.addi.evaluator.core.PipelineParameters
+import com.addi.evaluator.domain.EvaluationOutcome
+import com.addi.evaluator.domain.PipelineParameters
 import com.addi.thirdparty.JudicialRecordArchiveClient
 import com.addi.thirdparty.NationalRegistryClient
 import com.addi.thirdparty.ProspectQualifierClient

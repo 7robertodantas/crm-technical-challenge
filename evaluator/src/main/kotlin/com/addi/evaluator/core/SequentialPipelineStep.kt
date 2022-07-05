@@ -1,5 +1,7 @@
 package com.addi.evaluator.core
 
+import com.addi.evaluator.domain.EvaluationOutcome
+import com.addi.evaluator.domain.PipelineParameters
 import org.slf4j.LoggerFactory
 
 /**

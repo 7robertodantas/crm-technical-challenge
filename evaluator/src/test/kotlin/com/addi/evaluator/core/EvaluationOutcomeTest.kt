@@ -1,5 +1,6 @@
 package com.addi.evaluator.core
 
+import com.addi.evaluator.domain.EvaluationOutcome
 import io.mockk.mockkClass
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat

@@ -1,4 +1,4 @@
-package com.addi.evaluator.core
+package com.addi.evaluator.domain
 
 /**
  * This represents an outcome of an evaluation.

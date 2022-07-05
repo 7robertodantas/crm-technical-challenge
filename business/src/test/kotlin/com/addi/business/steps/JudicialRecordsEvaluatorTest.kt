@@ -5,8 +5,8 @@ import com.addi.business.domain.command.GetPersonDataCommand
 import com.addi.business.domain.exceptions.PersonNotFoundException
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_HAS_JUDICIAL_RECORDS
-import com.addi.evaluator.core.EvaluationOutcome
-import com.addi.evaluator.core.PipelineParameters
+import com.addi.evaluator.domain.EvaluationOutcome
+import com.addi.evaluator.domain.PipelineParameters
 import com.addi.business.adapter.JudicialRecordArchive
 import io.mockk.coEvery
 import io.mockk.mockkClass

@@ -1,6 +1,6 @@
 package com.addi.business.domain.evaluator
 
-import com.addi.evaluator.core.EvaluationBucket
+import com.addi.evaluator.domain.EvaluationBucket
 
 enum class LeadEvaluationBucket : EvaluationBucket {
     NATIONAL_ID_NUMBER,

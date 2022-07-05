@@ -7,8 +7,8 @@ import com.addi.business.domain.exceptions.PersonNotFoundException
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.NATIONAL_ID_NUMBER
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_EXISTS
 import com.addi.business.domain.evaluator.LeadEvaluationBucket.PERSON_MATCHES_INTERNAL
-import com.addi.evaluator.core.EvaluationOutcome
-import com.addi.evaluator.core.PipelineParameters
+import com.addi.evaluator.domain.EvaluationOutcome
+import com.addi.evaluator.domain.PipelineParameters
 import com.addi.business.adapter.NationalRegistry
 import com.addi.business.adapter.PersonRepository
 import io.mockk.coEvery
