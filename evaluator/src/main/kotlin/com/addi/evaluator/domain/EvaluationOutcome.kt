@@ -1,5 +1,7 @@
 package com.addi.evaluator.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 /**
  * This represents an outcome of an evaluation.
  *
@@ -48,6 +50,7 @@ data class EvaluationOutcome(
     /**
      * Returns whether this outcome represents a failure.
      */
+    @JsonIgnore
     fun isFail(): Boolean = !success
 
     /**

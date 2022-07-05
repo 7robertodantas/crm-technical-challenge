@@ -1,43 +1,24 @@
 package com.addi.application
 
-import com.addi.business.adapter.JudicialRecordArchive
-import com.addi.business.adapter.NationalRegistry
-import com.addi.business.adapter.PersonRepository
-import com.addi.business.adapter.ProspectQualifier
-import com.addi.business.domain.Person
 import com.addi.business.domain.evaluator.LeadEvaluationBucket
 import com.addi.business.service.LeadProspectService
-import com.addi.business.service.LeadProspectServiceImpl
 import com.addi.evaluator.domain.EvaluationOutcome
 import com.addi.evaluator.domain.PipelineParameters
-import com.addi.thirdparty.JudicialRecordArchiveClient
-import com.addi.thirdparty.NationalRegistryClient
-import com.addi.thirdparty.ProspectQualifierClient
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.UUID
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class LeadEvaluationApplication(
-    private val nationalRegistryUrl: String,
-    private val judicialArchiveUrl: String,
-    private val prospectQualifierUrl: String
-) {
+class LeadEvaluationApplication(config: ApplicationConfiguration) {
 
-    private val nationalRegistry: NationalRegistry = NationalRegistryClient(nationalRegistryUrl)
-    private val judicialRecordArchive: JudicialRecordArchive = JudicialRecordArchiveClient(judicialArchiveUrl)
-    private val prospectQualifier: ProspectQualifier = ProspectQualifierClient(prospectQualifierUrl)
-    private val personRepository = object : PersonRepository {
-        override suspend fun matchStored(person: Person): Boolean {
-            return true;
-        }
-    }
-    private val service: LeadProspectService = LeadProspectServiceImpl(
-        nationalRegistry,
-        personRepository,
-        judicialRecordArchive,
-        prospectQualifier
+    private val service: LeadProspectService = LeadProspectServiceFactory.createService(
+        config.nationalRegistryUrl,
+        config.judicialArchiveUrl,
+        config.prospectQualifierUrl
     )
 
     suspend fun evaluate(nationalIdNumber: String): EvaluationOutcome {
@@ -51,22 +32,51 @@ class LeadEvaluationApplication(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(LeadEvaluationApplication::class.java)
+        private val log = LoggerFactory.getLogger(LeadEvaluationApplication::class.java)
+        private const val EMBEDDED_MOCKSERVER_ENV = "EMBEDDED_MOCKSERVER_STUB"
+        private const val NATIONAL_REGISTRY_URL_ENV = "NATIONAL_REGISTRY_URL"
+        private const val JUDICIAL_ARCHIVE_URL_ENV = "JUDICIAL_ARCHIVE_URL"
+        private const val PROSPECT_QUALIFIER_URL_ENV = "PROSPECT_QUALIFIER_URL"
+        private val objectMapper = jacksonMapperBuilder()
+            .addModule(JavaTimeModule())
+            .serializationInclusion(JsonInclude.Include.NON_NULL)
+            .build()
 
         @JvmStatic
         fun main(args: Array<String>) {
-            val app = LeadEvaluationApplication(
-                nationalRegistryUrl = System.getenv("NATIONAL_REGISTRY_URL")
-                    ?: "http://localhost:8080/national-registry",
-                judicialArchiveUrl = System.getenv("JUDICIAL_ARCHIVE_URL")
-                    ?: "http://localhost:8080/judicial-archive",
-                prospectQualifierUrl = System.getenv("PROSPECT_QUALIFIER_URL")
-                    ?: "http://localhost:8080/prospect-qualifier"
-            )
+            val nationalIdNumber = args.firstOrNull() ?: UUID.randomUUID().toString()
+            log.info("Using national id number as '$nationalIdNumber'")
+
+            val embeddedMockserver = (System.getenv(EMBEDDED_MOCKSERVER_ENV) ?: "true").toBoolean()
+            val config = if (embeddedMockserver) {
+                log.info("Environment variable $EMBEDDED_MOCKSERVER_ENV is enabled.")
+                EmbeddedMockserverStub.start()
+                Runtime.getRuntime().addShutdownHook(Thread {
+                    EmbeddedMockserverStub.stop()
+                })
+                log.info("Stubbing http endpoints")
+                EmbeddedMockserverStub.stub(nationalIdNumber)
+                ApplicationConfiguration(
+                    nationalRegistryUrl = EmbeddedMockserverStub.getUrl(),
+                    judicialArchiveUrl = EmbeddedMockserverStub.getUrl(),
+                    prospectQualifierUrl = EmbeddedMockserverStub.getUrl(),
+                )
+            } else {
+                ApplicationConfiguration(
+                    nationalRegistryUrl = System.getenv(NATIONAL_REGISTRY_URL_ENV)
+                        ?: "http://localhost:8080/national-registry",
+                    judicialArchiveUrl = System.getenv(JUDICIAL_ARCHIVE_URL_ENV)
+                        ?: "http://localhost:8080/judicial-archive",
+                    prospectQualifierUrl = System.getenv(PROSPECT_QUALIFIER_URL_ENV)
+                        ?: "http://localhost:8080/prospect-qualifier",
+                )
+            }
+
+            val app = LeadEvaluationApplication(config)
 
             runBlocking {
-                val result = app.evaluate(args.firstOrNull() ?: UUID.randomUUID().toString())
-                logger.info("Result is $result")
+                val result = app.evaluate(nationalIdNumber)
+                log.info("Result is ${objectMapper.writeValueAsString(result)}")
             }
         }
     }

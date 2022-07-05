@@ -16,6 +16,20 @@ The following diagram represents an overview of the project structure.
 | **third-party** | This module contains the http client requests implementation. It's responsible for doing the tcp connection. |
 
 # Running Instructions 
+
+There are a few configurations that can be tweaked via enviornment variables to run this project. The following section describes them.
+
+## Configuration
+
+| environment variable | default | behavior  
+|---|---|---|
+| **EMBEDDED_MOCKSERVER_STUB** | true | If enabled this will run a stub http server that will replace all external system URL integration and response back with a successful response.
+| **NATIONAL_REGISTRY_URL** | http://localhost:8080/national-registry | It changes the endpoint to perform national registry http requests.
+| **JUDICIAL_ARCHIVE_URL** | http://localhost:8080/judicial-archive |  It changes the endpoint to perform judicial archive http requests.
+| **PROSPECT_QUALIFIER_URL** | http://localhost:8080/prospect-qualifier |  It changes the endpoint to perform prospect score qualification http requests.
+
+
+
 ## Build and run via Command Line
 
 ### Running via command line
