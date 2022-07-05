@@ -1,4 +1,4 @@
-package com.addi.application
+package com.addi.application.factory
 
 import com.addi.business.adapter.JudicialRecordArchive
 import com.addi.business.adapter.NationalRegistry

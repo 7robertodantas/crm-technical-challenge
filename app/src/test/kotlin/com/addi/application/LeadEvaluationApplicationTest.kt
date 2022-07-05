@@ -1,5 +1,6 @@
 package com.addi.application
 
+import com.addi.application.config.ApplicationConfiguration
 import com.addi.business.domain.JudicialRecord
 import com.addi.business.domain.PersonRegistry
 import com.addi.business.domain.ProspectQualification

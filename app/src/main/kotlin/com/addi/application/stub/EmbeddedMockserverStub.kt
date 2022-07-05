@@ -1,4 +1,4 @@
-package com.addi.application
+package com.addi.application.stub
 
 import com.addi.business.domain.JudicialRecord
 import com.addi.business.domain.PersonRegistry
@@ -25,6 +25,9 @@ object EmbeddedMockserverStub {
 
     private var mockServer: ClientAndServer? = null
 
+    /**
+     * Starts a new embedded mockserver in a random port.
+     */
     fun start() {
         log.info("Starting embedded mockserver")
         mockServer = ClientAndServer.startClientAndServer(
@@ -33,60 +36,66 @@ object EmbeddedMockserverStub {
         )
     }
 
+    /**
+     * Returns the url of mockserver.
+     */
     fun getUrl(): String {
         return "http://localhost:${mockServer?.port}"
     }
 
+    /**
+     * Stubs all requests used by the evaluation process.
+     * Using random delay between 100ms to 300ms
+     */
     fun stub(nationalIdNumber: String) {
-        val personRegistry = PersonRegistry(
-            nationalIdNumber = nationalIdNumber,
-            birthDate = LocalDate.now(),
-            firstName = "foo",
-            lastName = "bar",
-            email = "$nationalIdNumber@email.com"
-        )
-        val judicialRecord = JudicialRecord(
-            nationalIdNumber = nationalIdNumber,
-            hasRecords = false
-        )
-        val score = ProspectQualification(
-            score = 65
+        stub(
+            path = "/persons/$nationalIdNumber/registry",
+            delay = Random.nextInt(100, 300).toLong(),
+            response = PersonRegistry(
+                nationalIdNumber = nationalIdNumber,
+                birthDate = LocalDate.now(),
+                firstName = "foo",
+                lastName = "bar",
+                email = "$nationalIdNumber@email.com"
+            )
         )
 
-        mockServer?.`when`(
-            HttpRequest.request("/persons/$nationalIdNumber/registry")
-        )?.respond(
-            HttpResponse.response()
-                .withBody(JsonBody(objectMapper.writeValueAsString(personRegistry)))
-                .withStatusCode(200)
-                .withDelay(
-                    Delay.milliseconds(Random.nextInt(100, 300).toLong())
-                )
+        stub(
+            path = "/persons/$nationalIdNumber/judicial",
+            delay = Random.nextInt(100, 300).toLong(),
+            response = JudicialRecord(
+                nationalIdNumber = nationalIdNumber,
+                hasRecords = false
+            )
         )
 
-        mockServer?.`when`(
-            HttpRequest.request("/persons/$nationalIdNumber/judicial")
-        )?.respond(
-            HttpResponse.response()
-                .withBody(JsonBody(objectMapper.writeValueAsString(judicialRecord)))
-                .withStatusCode(200)
-                .withDelay(
-                    Delay.milliseconds(Random.nextInt(100, 200).toLong())
-                )
+        stub(
+            path = "/persons/$nationalIdNumber/score",
+            delay = Random.nextInt(100, 300).toLong(),
+            response = ProspectQualification(
+                score = 65
+            )
         )
+    }
 
+    private fun stub(path: String, delay: Long, response: Any) {
+        log.info("Stubbing request '$path' with delay of '$delay'ms")
         mockServer?.`when`(
-            HttpRequest.request("/persons/$nationalIdNumber/score")
+            HttpRequest.request(path)
         )?.respond(
             HttpResponse.response()
-                .withBody(JsonBody(objectMapper.writeValueAsString(score)))
+                .withBody(JsonBody(objectMapper.writeValueAsString(response)))
                 .withStatusCode(200)
                 .withDelay(
-                    Delay.milliseconds(Random.nextInt(100, 200).toLong())
+                    Delay.milliseconds(delay)
                 )
         )
     }
 
+
+    /**
+     * Stop embedded mockserver.
+     */
     fun stop() {
         log.info("Stopping embedded mockserver")
         mockServer?.stop()
