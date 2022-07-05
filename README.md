@@ -1,3 +1,20 @@
+# Project Structure 
+
+The following diagram represents an overview of the project structure.
+
+<p align="center">
+  <img src="docs/assets/crm-technical-challenge.drawio.svg">
+</p>
+
+### Modules
+
+| Modules | Description |
+|:--------------|:------------|
+| **app** | This module contains the entrypoint of the application. It's responsible to instantiate all dependencies and glue them together to execute the business logic. |
+| **business** | This module contains the implementation of business logic. It performs the validations and aggregations over adapter interfaces. |
+| **evaluator** | This module contains a common logic to handle a chain of responsability. It contains boilerplate to run a pipeline of steps. |
+| **third-party** | This module contains the http client requests implementation. It's responsible for doing the tcp connection. |
+
 # Running Instructions 
 ## Build and run via Command Line
 
