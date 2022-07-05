@@ -1,3 +1,21 @@
+# Table of Contents
+
+- [Project Structure](#project-structure)
+  + [Modules](#modules)
+- [Solution](#solution)
+  * [Assumptions](#assumptions)
+  * [Decisions](#decisions)
+  * [Improvements](#improvements)
+- [Running Instructions](#running-instructions)
+  * [Configuration](#configuration)
+  * [Build and run via Command Line](#build-and-run-via-command-line)
+    + [Running via command line](#running-via-command-line)
+  * [Build and run via Dockerfile](#build-and-run-via-dockerfile)
+    + [Running via docker](#running-via-docker)
+  * [Running Tests](#running-tests)
+    + [Running tests via command line](#running-tests-via-command-line)
+    + [Running tests via docker](#running-tests-via-docker)
+
 # Project Structure 
 
 The following diagram represents an overview of the project structure.
