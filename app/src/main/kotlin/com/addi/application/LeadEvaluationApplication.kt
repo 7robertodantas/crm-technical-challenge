@@ -5,6 +5,7 @@ import com.addi.application.factory.LeadProspectServiceFactory
 import com.addi.application.stub.EmbeddedMockserverStub
 import com.addi.business.domain.evaluator.LeadEvaluationBucket
 import com.addi.business.service.LeadProspectService
+import com.addi.evaluator.domain.EvaluationOutcome
 import com.addi.evaluator.domain.PipelineParameters
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -23,7 +24,7 @@ class LeadEvaluationApplication(val config: ApplicationConfiguration) {
         config.prospectQualifierUrl
     )
 
-    suspend fun evaluate(nationalIdNumber: String) {
+    suspend fun evaluate(nationalIdNumber: String): EvaluationOutcome {
         if (config.embeddedMockServer) {
             EmbeddedMockserverStub.stub(nationalIdNumber)
         }
@@ -37,6 +38,7 @@ class LeadEvaluationApplication(val config: ApplicationConfiguration) {
             )
         )
         log.info("Result is ${objectMapper.writeValueAsString(outcome)}")
+        return outcome
     }
 
     companion object {

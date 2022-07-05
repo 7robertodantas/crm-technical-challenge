@@ -34,6 +34,7 @@ internal class LeadEvaluationApplicationTest {
 
     private val app = LeadEvaluationApplication(
         ApplicationConfiguration(
+            embeddedMockServer = true,
             nationalRegistryUrl = mockServerUrl,
             judicialArchiveUrl = mockServerUrl,
             prospectQualifierUrl = mockServerUrl,
